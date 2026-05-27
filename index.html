@@ -1,16 +1,47 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/dataflow-logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dataflow — RRHH · Sueldos</title>
 
-    <!-- 🚀 Tailwind por CDN (no hace falta instalar nada) -->
+    <!-- Inter — sistema tipografico v12 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CDN con tema v12 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // Config mínima (dejalo así por ahora)
-      tailwind.config = { theme: { extend: {} } };
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            },
+            colors: {
+              carbon: {
+                950: '#080a0e',
+                900: '#0f1115',
+                800: '#151922',
+                700: '#1b2230',
+                600: '#222938',
+                500: '#2a3347',
+                400: '#374461',
+                300: '#4a5a7a',
+                200: '#64748b',
+                100: '#8b95a7',
+              },
+            },
+            boxShadow: {
+              'glow-sm': '0 0 8px rgba(99,102,241,0.2)',
+              'glow': '0 0 16px rgba(99,102,241,0.25)',
+              'card': '0 1px 2px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.25)',
+            },
+          },
+        },
+      };
     </script>
   </head>
   <body>

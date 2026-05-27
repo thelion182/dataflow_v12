@@ -1641,363 +1641,355 @@ const showFirstPeriodHint = periods.length === 0;
 
 return (
   <div
-    className="min-h-screen text-neutral-100 p-6 pb-32 overflow-x-hidden"
+    className="min-h-screen text-neutral-100 overflow-x-hidden"
     style={{
-      backgroundColor: isDark
-        ? (modoActivo === 'reclamos' ? '#040d16' : '#0a0a0a')
-        : (modoActivo === 'reclamos' ? '#e8f2ff' : '#f7f8fc'),
-      transition: 'background-color 0.5s ease',
+      backgroundColor: isDark ? '#0f1115' : '#f5f7fa',
+      paddingLeft: 'var(--df-sidebar-width)',
     }}
   >
-    {/* 👇 Mostramos el overlay arriba de todo */}
     {overlay}
 
-    {/* Estilos de la animación del logo */}
-    <style>
-      {`
-        @keyframes slowSpin {
-          0%   { transform: rotate(0deg); }
-          2%   { transform: rotate(360deg); }
-          100% { transform: rotate(360deg); }
-        }
-        .animate-slowspin {
-          animation: slowSpin 12s linear infinite;
-        }
-      `}
-    </style>
+    {/* ═══════════════════════════════════════════
+        SIDEBAR v12 — navegación lateral fija
+        ═══════════════════════════════════════════ */}
+    <aside className="df-sidebar">
+      {/* Logo */}
+      <div className="df-sidebar-logo">
+        <Logo className="h-7 animate-slowspin" />
+        <span className="df-sidebar-logo-text">Dataflow</span>
+      </div>
 
-    <div
-      className="w-full space-y-6 rounded-2xl p-6 shadow-2xl"
-      style={isDark
-        ? {
-            border: modoActivo === 'reclamos' ? '1px solid #3b82f655' : '1px solid #262626',
-            background: modoActivo === 'reclamos' ? '#080f1a' : '#171717',
-            boxShadow: modoActivo === 'reclamos' ? '0 0 30px #3b82f610' : 'none',
-            transition: 'border-color 0.5s ease, background 0.5s ease, box-shadow 0.5s ease',
-          }
-        : {
-            border: modoActivo === 'reclamos' ? '1px solid #60a5fa' : '1px solid #e4e9f2',
-            background: modoActivo === 'reclamos' ? '#eff6ff' : '#ffffff',
-            boxShadow: modoActivo === 'reclamos'
-              ? '0 0 28px rgba(59,130,246,0.18), 0 2px 16px rgba(0,0,0,0.06)'
-              : '0 2px 16px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.04)',
-            transition: 'border-color 0.5s ease, background 0.5s ease, box-shadow 0.5s ease',
-          }
-      }
-    >
-        {/* Header */}
-        <header
-  ref={headerRef}
-  className="flex flex-col gap-4 2xl:flex-row 2xl:items-end 2xl:justify-between"
->
-  <div className="flex items-center gap-3">
-
-    {/* Logo con giro suave cada tanto */}
-    <div className="relative">
-      <Logo className="h-12 animate-slowspin" />
-    </div>
-
-    <div>
-      <h1 className="leading-none select-none" aria-label={APP.NAME}>
-        <span
-          className="tracking-tight"
-          style={{ color: isDark ? "#ffffff" : "#0f172a", letterSpacing: "-0.04em", fontWeight: 300, fontSize: "clamp(2rem, 3.5vw, 2.6rem)" }}
+      {/* Navegación principal */}
+      <nav className="df-nav">
+        {/* Información */}
+        <button
+          onClick={() => toggleModo("informacion")}
+          className={`df-nav-item ${modoActivo === 'informacion' ? 'active' : ''}`}
+          title="Módulo Información — archivos de liquidación"
         >
-          Dataflow
-        </span>
-      </h1>
-      <p className="text-neutral-400">
-        {APP.TAGLINE || "Gestión de archivos entre RRHH (Información) y Sueldos."}
-        {showFirstPeriodHint && (
-          <span
-            className="ml-2 text-white font-medium animate-pulse"
-            style={{
-              textShadow:
-                "0 0 6px rgba(255,255,255,0.7), 0 0 10px rgba(255,255,255,0.5)"
-            }}
+          <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <rect x="2" y="2" width="12" height="12" rx="1.5"/>
+            <path d="M5 5.5h6M5 8h4M5 10.5h5"/>
+          </svg>
+          Información
+        </button>
+
+        {/* Reclamos */}
+        <button
+          onClick={() => toggleModo("reclamos")}
+          className={`df-nav-item ${modoActivo === 'reclamos' ? 'active' : ''}`}
+          title="Módulo Reclamos de haberes"
+        >
+          <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H2a1 1 0 00-1 1v7a1 1 0 001 1h3l3 3 3-3h3a1 1 0 001-1V3a1 1 0 00-1-1z"/>
+          </svg>
+          Reclamos
+        </button>
+
+        <div className="df-nav-label">Gestión</div>
+
+        {/* Sectores & Sedes */}
+        {(isAdminOrSuper) && (
+          <button
+            onClick={() => setSectorsOpen(true)}
+            className="df-nav-item"
+            title="Gestionar sectores y sedes"
           >
-            Primero elegí la liquidación (mes/año).
-          </span>
+            <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/>
+              <rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/>
+            </svg>
+            Sectores & Sedes
+          </button>
         )}
-      </p>
-    </div>
-  </div>
 
-  {/* Badge de modo activo */}
-  <div
-    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg"
-    style={modoActivo === 'reclamos'
-      ? { background: isDark ? '#0a1525' : '#dbeafe', color: isDark ? '#7db4f0' : '#1e40af', border: isDark ? '1px solid #3b82f640' : '1px solid #60a5fa', fontSize: 11 }
-      : { background: isDark ? '#1a1a1a' : '#f1f5f9', color: isDark ? '#737373' : '#64748b', border: isDark ? '1px solid #2a2a2a' : '1px solid #e2e8f0', fontSize: 11 }
-    }
-  >
-    <span style={{
-      width: 6, height: 6, borderRadius: '50%', display: 'inline-block',
-      background: modoActivo === 'reclamos' ? (isDark ? '#60a5fa' : '#3b82f6') : (isDark ? '#525252' : '#94a3b8'),
-      boxShadow: modoActivo === 'reclamos' ? (isDark ? '0 0 5px #60a5fa80' : '0 0 6px #3b82f660') : 'none',
-    }} />
-    {modoActivo === 'reclamos' ? 'Modo Reclamo' : 'Modo Información'}
-  </div>
+        {/* Liquidaciones */}
+        {isAdminOrSuper && (
+          <button
+            onClick={() => setManagePeriodsOpen(true)}
+            className="df-nav-item"
+            title="Gestionar liquidaciones"
+          >
+            <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <rect x="1" y="3" width="14" height="11" rx="1.5"/>
+              <path d="M5 3V1M11 3V1M1 7h14"/>
+            </svg>
+            Liquidaciones
+          </button>
+        )}
 
-  <div className="flex flex-wrap items-center gap-2 ml-auto">
-  <button
-  onClick={() => setHelpOpen(true)}
-  title="Ayuda"
-  className="p-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 border border-neutral-700"
->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-5 w-5 text-neutral-200"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={1.8}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 8.5h.01M11 10.75h1v5h1m-1-12.5a9.25 9.25 0 100 18.5 9.25 9.25 0 000-18.5z"
-    />
-  </svg>
-</button>    
-          {/* Selector de período */}
-          <PeriodPicker
-            role={meRole}
-            canCreate={false}
-            periods={sortedPeriods}
-            selectedPeriodId={selectedPeriodId}
-            setSelectedPeriodId={(id) => {
-              setSelectedPeriodId(id);
-              setSelected(null);
-            }}
-          />
+        {/* Reportes */}
+        {myPerms.actions.exportCSV && (
+          <button
+            onClick={() => { setMenuOpen(m => m === "reportes" ? null : "reportes"); }}
+            className={`df-nav-item ${menuOpen === 'reportes' ? 'active' : ''}`}
+            title="Exportar reportes CSV"
+          >
+            <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M2 12l3-3 2 2 3-4 3 3"/>
+              <rect x="1" y="1" width="14" height="14" rx="1.5"/>
+            </svg>
+            Reportes
+          </button>
+        )}
 
-          {/* Cartelito global de pendientes (dudas + arreglos) */}
-          {selectedPeriodId && (
-            <button
-              type="button"
-              onClick={() => {
-                setDoubtMode("con");
-                setDoubtValue("");
-              }}
-              className={cls(
-                "hidden md:flex items-center gap-2 px-3 py-1 rounded-xl border text-xs",
-                summaryCurrentPeriod.totalPend > 0
-                  ? "border-amber-500/60 bg-amber-500/10 text-amber-100"
-                  : "border-green-500/60 bg-green-500/10 text-green-200"
-              )}
-              title="Click para ver solo archivos con dudas pendientes"
-            >
-              <span>
-                {summaryCurrentPeriod.totalPend > 0 ? "🟡 Pendientes" : "🟢 Sin pendientes"}
-              </span>
-              <span className="font-semibold">
-                {summaryCurrentPeriod.dudasPend + summaryCurrentPeriod.arreglosPend}
-              </span>
-            </button>
+        <div className="df-nav-label">Administración</div>
+
+        {/* Usuarios */}
+        {myPerms?.actions?.manageUsers && (
+          <button
+            onClick={() => setUsersOpen(true)}
+            className="df-nav-item"
+            title="Gestionar usuarios y permisos"
+          >
+            <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <circle cx="5.5" cy="4.5" r="2"/><path d="M1 14c0-2.5 2-4.5 4.5-4.5S10 11.5 10 14"/>
+              <circle cx="12" cy="4" r="1.5"/><path d="M14.5 13c0-2-1.3-3.5-2.9-4"/>
+            </svg>
+            Usuarios
+          </button>
+        )}
+
+        {/* Dashboard SA */}
+        {isSuperAdmin && (
+          <button
+            onClick={() => setDashboardOpen(true)}
+            className="df-nav-item"
+            title="Dashboard superadmin — auditoría"
+          >
+            <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <rect x="1" y="9" width="4" height="6" rx="0.5"/><rect x="6" y="5" width="4" height="10" rx="0.5"/>
+              <rect x="11" y="1" width="4" height="14" rx="0.5"/>
+            </svg>
+            Dashboard SA
+          </button>
+        )}
+      </nav>
+
+      {/* Footer sidebar */}
+      <div className="df-sidebar-footer">
+        {/* Toggle modo claro/oscuro */}
+        <button
+          onClick={toggleTheme}
+          className="df-nav-item"
+          title={isDark ? "Cambiar a modo Día" : "Cambiar a modo Noche"}
+        >
+          {isDark ? (
+            <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <circle cx="8" cy="8" r="3"/>
+              <path d="M8 1.5v1M8 13.5v1M1.5 8h1M13.5 8h1M3.4 3.4l.7.7M11.9 11.9l.7.7M3.4 12.6l.7-.7M11.9 4.1l.7-.7"/>
+            </svg>
+          ) : (
+            <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M13.5 9.5A5.5 5.5 0 016.5 2.5c0-.3.03-.6.07-.9A5.5 5.5 0 1013.5 9.5z"/>
+            </svg>
           )}
+          {isDark ? "Modo Día" : "Modo Noche"}
+        </button>
 
-          {/* ===== Menú: Gestión ===== */}
-          <div className="relative">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setMenuOpen((m) => (m === "gestion" ? null : "gestion"));
-              }}
-              className={MENU_TRIGGER}
-              aria-haspopup="menu"
-              aria-expanded={menuOpen === "gestion"}
-              title="Opciones de gestión"
-            >
-              Gestión ▾
-            </button>
-            {menuOpen === "gestion" && (
-              <div
-                role="menu"
-                className="absolute right-0 mt-2 w-72 rounded-xl border border-neutral-800 bg-neutral-900 shadow-2xl p-2 z-20"
-              >
-                <div className="px-2 py-1 text-[11px] uppercase tracking-wide text-neutral-500">
-                  Liquidaciones
-                </div>
+        {/* Perfil usuario */}
+        <button
+          onClick={() => setProfileOpen(true)}
+          className="df-nav-item"
+          title="Ver mi perfil"
+        >
+          <Avatar src={me?.avatarDataUrl || undefined} name={meDisplay} size={16} />
+          <span className="truncate text-xs">{meDisplay}</span>
+        </button>
+      </div>
+    </aside>
 
-                {myPerms.actions.createPeriod && (
-                  <button
-                    onClick={() => {
-                      setMenuOpen(null);
-                      setAddPeriodOpen(true);
-                      setNewPeriodYM("");
-                    }}
-                    className={MENU_ITEM}
-                    title="Crear nueva liquidación (mes/año)"
-                  >
-                    ➕ Nueva liquidación
-                  </button>
-                )}
+    {/* ═══════════════════════════════════════════
+        CONTENIDO PRINCIPAL
+        ═══════════════════════════════════════════ */}
+    <div className="min-h-screen flex flex-col">
 
-{isAdminOrSuper && (
-                  <button
-                    onClick={() => {
-                      setMenuOpen(null);
-                      setManagePeriodsOpen(true);
-                    }}
-                    className={MENU_ITEM}
-                    title="Gestionar liquidaciones"
-                  >
-                    🗓️ Gestionar liquidaciones
-                  </button>
-                )}
+        {/* ─── TOPBAR v12 ─── */}
+        <header ref={headerRef} className="df-topbar">
 
-                {isSuperAdmin && (
-                  <button
-                    onClick={() => { setMenuOpen(null); setDashboardOpen(true); }}
-                    className={MENU_ITEM}
-                  >
-                    📊 Dashboard SA
-                  </button>
-                )}
-                {isSuperAdmin && (
-                  <button
-                    onClick={() => {
-                      setMenuOpen(null);
-                      try {
-                        const data: Record<string, any> = {};
-                        for (let i = 0; i < localStorage.length; i++) {
-                          const key = localStorage.key(i);
-                          if (key) {
-                            try { data[key] = JSON.parse(localStorage.getItem(key) || "null"); }
-                            catch { data[key] = localStorage.getItem(key); }
-                          }
-                        }
-                        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement("a");
-                        a.href = url;
-                        a.download = `dataflow-backup-${new Date().toISOString().slice(0, 10)}.json`;
-                        document.body.appendChild(a); a.click(); a.remove();
-                        URL.revokeObjectURL(url);
-                      } catch (e) { alert("Error al exportar: " + e); }
-                    }}
-                    className={MENU_ITEM}
-                  >
-                    💾 Backup completo
-                  </button>
-                )}
-                {isSuperAdmin && selectedPeriodId && (
-                  <button
-                    onClick={() => {
-                      setMenuOpen(null);
-                      setResetPeriodOpen(true);
-                      setResetPeriodPass("");
-                      setResetPeriodError("");
-                    }}
-                    className={`${MENU_ITEM} text-rose-300`}
-                    title="Eliminar todos los archivos de la liquidación actual (requiere contraseña)"
-                  >
-                    🔥 Reset liquidación
-                  </button>
-                )}
-
-                {/* ===== Sectores (NUEVO) ===== */}
-                <div className="px-2 pt-3 pb-1 text-[11px] uppercase tracking-wide text-neutral-500">
-                  Sectores
-                </div>
-                <button
-                  onClick={() => {
-                    setMenuOpen(null);
-                    setSectorsOpen(true);
-                  }}
-                  className={MENU_ITEM}
-                  title="Gestionar reglas Sector + Sede"
-                >
-                  🏷️ Sectores & Sedes
-                </button>
-                
-                {/* ===== Fin Sectores ===== */}
-
-
-                {/* ===== Resumen por sector (NUEVO) ===== */}
-                <div className="px-2 pt-3 pb-1 text-[11px] uppercase tracking-wide text-neutral-500">
-                  Resumen
-                </div>
-                <button
-                  onClick={() => {
-                    setMenuOpen(null);
-                    setSectorSummaryOpen(true);
-                    setSectorSummarySelectedKey(null);
-                  }}
-                  className={MENU_ITEM}
-                  title="Ver archivos agrupados por sector"
-                >
-                  📊 Vista por sector
-                </button>
-                <button
-                  onClick={() => {
-                    setMenuOpen(null);
-                    const all = filtered.map((f: any) => f.id);
-                    if (all.length === 0) { alert("No hay archivos visibles para re-detectar."); return; }
-                    let changed = 0;
-                    setFiles((prev: any[]) => prev.map((f: any) => {
-                      if (!all.includes(f.id)) return f;
-                      const gs = guessSiteForFileName(f.name || "");
-                      const gsc = guessSectorForFileName(f.name || "");
-                      const updated = (gs?.id ?? null) !== f.siteId || (gsc?.id ?? null) !== f.sectorId;
-                      if (updated) changed++;
-                      return { ...f,
-                        siteId: gs?.id ?? f.siteId ?? null,
-                        siteName: gs?.name ?? f.siteName ?? null,
-                        sectorId: gsc?.id ?? f.sectorId ?? null,
-                        sectorName: gsc?.name ?? f.sectorName ?? null,
-                      };
-                    }));
-                    setTimeout(() => pushToast({ title: "Re-detección OK", message: `${changed} archivo(s) actualizados en la vista actual.` }), 100);
-                  }}
-                  className={MENU_ITEM}
-                  title="Re-detecta sector y sede para todos los archivos de la vista actual, basándose en el nombre del archivo."
-                >
-                  🔄 Re-detectar sector/sede
-                </button>
-                {/* ===== Fin resumen ===== */}
-
-                <div className="px-2 pt-3 pb-1 text-[11px] uppercase tracking-wide text-neutral-500">
-                  Avanzado
-                </div>
-
-                {import.meta.env.VITE_USE_API !== 'true' && (
-                  <button
-                    onClick={() => {
-                      setMenuOpen(null);
-                      clearAll();
-                    }}
-                    className={MENU_ITEM}
-                    title="Reiniciar datos de la demo (localStorage)"
-                  >
-                    🔄 Reset demo
-                  </button>
-                )}
-              </div>
-            )}
+          {/* LEFT — título contextual */}
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="min-w-0">
+              <h2 className="text-sm font-semibold truncate" style={{ color: 'var(--df-text-primary)' }}>
+                {modoActivo === 'reclamos' ? 'Reclamos de haberes' : 'Información — Liquidaciones'}
+              </h2>
+              {showFirstPeriodHint && (
+                <p className="text-xs text-amber-400 animate-pulse">
+                  Seleccioná una liquidación para comenzar
+                </p>
+              )}
+            </div>
           </div>
 
-          {/* ===== Menú: Reportes ===== */}
-          {myPerms.actions.exportCSV && (
+          {/* RIGHT — controles */}
+          <div className="flex items-center gap-2 ml-auto flex-shrink-0">
+
+            {/* Ayuda */}
+            <button
+              onClick={() => setHelpOpen(true)}
+              title="Ayuda"
+              className="p-2 rounded-xl border text-xs transition-colors"
+              style={{ background: 'var(--df-bg-elevated)', borderColor: 'var(--df-border-default)', color: 'var(--df-text-secondary)' }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8.5h.01M11 10.75h1v5h1m-1-12.5a9.25 9.25 0 100 18.5 9.25 9.25 0 000-18.5z"/>
+              </svg>
+            </button>
+
+            {/* Selector de período */}
+            <PeriodPicker
+              role={meRole}
+              canCreate={false}
+              periods={sortedPeriods}
+              selectedPeriodId={selectedPeriodId}
+              setSelectedPeriodId={(id) => {
+                setSelectedPeriodId(id);
+                setSelected(null);
+              }}
+            />
+
+            {/* Badge de pendientes */}
+            {selectedPeriodId && (
+              <button
+                type="button"
+                onClick={() => { setDoubtMode("con"); setDoubtValue(""); }}
+                className={cls(
+                  "hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-medium transition-colors",
+                  summaryCurrentPeriod.totalPend > 0
+                    ? "border-amber-500/40 bg-amber-500/10 text-amber-300"
+                    : "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
+                )}
+                title="Ver archivos con dudas pendientes"
+              >
+                <span style={{ width: 6, height: 6, borderRadius: '50%', display: 'inline-block', flexShrink: 0, background: summaryCurrentPeriod.totalPend > 0 ? '#f59e0b' : '#10b981' }} />
+                {summaryCurrentPeriod.totalPend > 0 ? 'Pendientes' : 'Al día'}
+                <span className="font-semibold">{summaryCurrentPeriod.dudasPend + summaryCurrentPeriod.arreglosPend}</span>
+              </button>
+            )}
+
+            {/* ===== Menú: Gestión ===== */}
             <div className="relative">
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setMenuOpen((m) => (m === "reportes" ? null : "reportes"));
-                }}
+                onClick={(e) => { e.stopPropagation(); setMenuOpen((m) => (m === "gestion" ? null : "gestion")); }}
                 className={MENU_TRIGGER}
                 aria-haspopup="menu"
-                aria-expanded={menuOpen === "reportes"}
-                title="Exportar reportes"
+                aria-expanded={menuOpen === "gestion"}
+                title="Opciones de gestión"
               >
-                Reportes ▾
+                Gestión ▾
               </button>
-              {menuOpen === "reportes" && (
-                <div
-                  role="menu"
-                  className="absolute right-0 mt-2 w-80 rounded-xl border border-neutral-800 bg-neutral-900 shadow-2xl p-2 z-20"
+              {menuOpen === "gestion" && (
+                <div role="menu" className="absolute right-0 mt-2 w-72 rounded-xl border border-neutral-800 bg-neutral-900 shadow-2xl p-2 z-20">
+                  <div className="px-2 py-1 text-[11px] uppercase tracking-wide text-neutral-500">Liquidaciones</div>
+
+                  {myPerms.actions.createPeriod && (
+                    <button onClick={() => { setMenuOpen(null); setAddPeriodOpen(true); setNewPeriodYM(""); }} className={MENU_ITEM} title="Crear nueva liquidación (mes/año)">
+                      ➕ Nueva liquidación
+                    </button>
+                  )}
+                  {isAdminOrSuper && (
+                    <button onClick={() => { setMenuOpen(null); setManagePeriodsOpen(true); }} className={MENU_ITEM} title="Gestionar liquidaciones">
+                      🗓️ Gestionar liquidaciones
+                    </button>
+                  )}
+                  {isSuperAdmin && (
+                    <button onClick={() => { setMenuOpen(null); setDashboardOpen(true); }} className={MENU_ITEM}>
+                      📊 Dashboard SA
+                    </button>
+                  )}
+                  {isSuperAdmin && (
+                    <button
+                      onClick={() => {
+                        setMenuOpen(null);
+                        try {
+                          const data: Record<string, any> = {};
+                          for (let i = 0; i < localStorage.length; i++) {
+                            const key = localStorage.key(i);
+                            if (key) {
+                              try { data[key] = JSON.parse(localStorage.getItem(key) || "null"); }
+                              catch { data[key] = localStorage.getItem(key); }
+                            }
+                          }
+                          const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement("a");
+                          a.href = url;
+                          a.download = `dataflow-backup-${new Date().toISOString().slice(0, 10)}.json`;
+                          document.body.appendChild(a); a.click(); a.remove();
+                          URL.revokeObjectURL(url);
+                        } catch (e) { alert("Error al exportar: " + e); }
+                      }}
+                      className={MENU_ITEM}
+                    >
+                      💾 Backup completo
+                    </button>
+                  )}
+                  {isSuperAdmin && selectedPeriodId && (
+                    <button
+                      onClick={() => { setMenuOpen(null); setResetPeriodOpen(true); setResetPeriodPass(""); setResetPeriodError(""); }}
+                      className={`${MENU_ITEM} text-rose-300`}
+                      title="Eliminar todos los archivos de la liquidación actual (requiere contraseña)"
+                    >
+                      🔥 Reset liquidación
+                    </button>
+                  )}
+
+                  <div className="px-2 pt-3 pb-1 text-[11px] uppercase tracking-wide text-neutral-500">Sectores</div>
+                  <button onClick={() => { setMenuOpen(null); setSectorsOpen(true); }} className={MENU_ITEM} title="Gestionar reglas Sector + Sede">
+                    🏷️ Sectores & Sedes
+                  </button>
+
+                  <div className="px-2 pt-3 pb-1 text-[11px] uppercase tracking-wide text-neutral-500">Resumen</div>
+                  <button onClick={() => { setMenuOpen(null); setSectorSummaryOpen(true); setSectorSummarySelectedKey(null); }} className={MENU_ITEM} title="Ver archivos agrupados por sector">
+                    📊 Vista por sector
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMenuOpen(null);
+                      const all = filtered.map((f: any) => f.id);
+                      if (all.length === 0) { alert("No hay archivos visibles para re-detectar."); return; }
+                      let changed = 0;
+                      setFiles((prev: any[]) => prev.map((f: any) => {
+                        if (!all.includes(f.id)) return f;
+                        const gs = guessSiteForFileName(f.name || "");
+                        const gsc = guessSectorForFileName(f.name || "");
+                        const updated = (gs?.id ?? null) !== f.siteId || (gsc?.id ?? null) !== f.sectorId;
+                        if (updated) changed++;
+                        return { ...f, siteId: gs?.id ?? f.siteId ?? null, siteName: gs?.name ?? f.siteName ?? null, sectorId: gsc?.id ?? f.sectorId ?? null, sectorName: gsc?.name ?? f.sectorName ?? null };
+                      }));
+                      setTimeout(() => pushToast({ title: "Re-detección OK", message: `${changed} archivo(s) actualizados en la vista actual.` }), 100);
+                    }}
+                    className={MENU_ITEM}
+                    title="Re-detecta sector y sede para todos los archivos de la vista actual"
+                  >
+                    🔄 Re-detectar sector/sede
+                  </button>
+
+                  <div className="px-2 pt-3 pb-1 text-[11px] uppercase tracking-wide text-neutral-500">Avanzado</div>
+                  {import.meta.env.VITE_USE_API !== 'true' && (
+                    <button onClick={() => { setMenuOpen(null); clearAll(); }} className={MENU_ITEM} title="Reiniciar datos de la demo (localStorage)">
+                      🔄 Reset demo
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* ===== Menú: Reportes ===== */}
+            {myPerms.actions.exportCSV && (
+              <div className="relative">
+                <button
+                  onClick={(e) => { e.stopPropagation(); setMenuOpen((m) => (m === "reportes" ? null : "reportes")); }}
+                  className={MENU_TRIGGER}
+                  aria-haspopup="menu"
+                  aria-expanded={menuOpen === "reportes"}
+                  title="Exportar reportes"
                 >
+                  Reportes ▾
+                </button>
+                {menuOpen === "reportes" && (
+                  <div role="menu" className="absolute right-0 mt-2 w-80 rounded-xl border border-neutral-800 bg-neutral-900 shadow-2xl p-2 z-20">
+
                   <div className="px-2 py-1 text-[11px] uppercase tracking-wide text-neutral-500">
                     Exportar
                   </div>
@@ -2039,197 +2031,39 @@ return (
             </div>
           )}
 
-          {/* Toggle Información / Reclamos */}
-          <div
-            className="flex items-center gap-0.5 rounded-xl p-0.5"
-            style={{
-              background: isDark
-                ? (modoActivo === 'reclamos' ? '#0a1220' : '#262626')
-                : (modoActivo === 'reclamos' ? '#dbeafe' : '#f1f5f9'),
-              border: isDark
-                ? (modoActivo === 'reclamos' ? '1px solid #3b82f666' : '1px solid #404040')
-                : (modoActivo === 'reclamos' ? '1px solid #60a5fa' : '1px solid #d1d5db'),
-              transition: 'background 0.4s ease, border-color 0.4s ease',
-            }}
-          >
-            <button
-              onClick={() => toggleModo("informacion")}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
-              style={modoActivo === "informacion"
-                ? { background: isDark ? '#404040' : '#e2e8f0', color: isDark ? '#f5f5f5' : '#0f172a' }
-                : { color: isDark ? '#a3a3a3' : '#64748b' }}
-            >
-              Información
-            </button>
-            <button
-              onClick={() => toggleModo("reclamos")}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
-              style={modoActivo === "reclamos"
-                ? isDark
-                  ? { background: '#1e3a5f', color: '#bfdbfe', boxShadow: '0 0 8px #3b82f633' }
-                  : { background: '#bfdbfe', color: '#1e3a8a', boxShadow: '0 0 10px rgba(59,130,246,0.30)' }
-                : { color: isDark ? '#a3a3a3' : '#64748b' }}
-            >
-              Reclamos
-            </button>
+            {/* Campana de notificaciones */}
+            <NotificationBell />
+
+            {/* Menú del usuario */}
+            <div className="relative">
+              <button
+                onClick={(e) => { e.stopPropagation(); setMenuOpen((m) => (m === "user" ? null : "user")); }}
+                className={MENU_TRIGGER}
+                aria-haspopup="menu"
+                aria-expanded={menuOpen === "user"}
+                title={meUsername}
+              >
+                <Avatar src={me?.avatarDataUrl || undefined} name={meDisplay} size={20} />
+                <span className="hidden sm:inline text-neutral-200">{meDisplay}</span>
+                <span className="hidden md:inline px-2 py-0.5 rounded-lg text-[11px] bg-neutral-800 text-neutral-300">
+                  {ROLE_LABELS[meRole] || meRole}
+                </span>
+                ▾
+              </button>
+              {menuOpen === "user" && (
+                <div role="menu" className="absolute right-0 mt-2 w-64 rounded-xl border border-neutral-800 bg-neutral-900 shadow-2xl p-2 z-50" onClick={(e) => e.stopPropagation()}>
+                  <button onClick={() => { setMenuOpen(null); setProfileOpen(true); }} className={MENU_ITEM}>👤 Mi perfil</button>
+                  <button onClick={() => { setMenuOpen(null); setUserConfigOpen(true); }} className={MENU_ITEM}>⚙️ Configuración</button>
+                  {myPerms?.actions?.manageUsers && (
+                    <button onClick={() => { setMenuOpen(null); setUsersOpen(true); }} className={MENU_ITEM}>👥 Gestionar usuarios</button>
+                  )}
+                  <button onClick={() => { setMenuOpen(null); handleLogout(); }} className={MENU_ITEM}>🚪 Cerrar sesión</button>
+                </div>
+              )}
+            </div>
+
           </div>
-
-          {/* Switch Día / Noche */}
-          <button
-            onClick={toggleTheme}
-            title={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-            aria-label="Toggle tema"
-            style={{
-              position: 'relative',
-              width: 92,
-              height: 32,
-              borderRadius: 999,
-              border: isDark ? '1px solid #1e3a5f' : '1px solid #b8cfe0',
-              background: isDark
-                ? 'linear-gradient(135deg, #0b1120, #151f32)'
-                : 'linear-gradient(135deg, #dce4f0, #e8edf6)',
-              cursor: 'pointer',
-              flexShrink: 0,
-              padding: 0,
-              transition: 'background 0.4s ease, border-color 0.4s ease',
-              boxShadow: isDark
-                ? 'inset 0 1px 4px rgba(0,0,0,0.7)'
-                : 'inset 0 1px 3px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06)',
-              overflow: 'hidden',
-            }}
-          >
-            {/* Etiqueta: "Noche" derecha / "Día" izquierda */}
-            <span style={{
-              position: 'absolute',
-              left: isDark ? 'auto' : 10,
-              right: isDark ? 10 : 'auto',
-              top: '50%', transform: 'translateY(-50%)',
-              fontSize: 9, fontWeight: 700, letterSpacing: '0.07em',
-              textTransform: 'uppercase',
-              color: isDark ? '#5c7fa8' : '#7a90a8',
-              pointerEvents: 'none', userSelect: 'none',
-              transition: 'opacity 0.3s ease',
-            }}>
-              {isDark ? 'Noche' : 'Día'}
-            </span>
-
-            {/* Thumb circular — izquierda en oscuro, derecha en claro */}
-            <span style={{
-              position: 'absolute',
-              width: 26, height: 26, borderRadius: '50%',
-              background: '#ffffff',
-              left: isDark ? 3 : 63,
-              top: '50%', transform: 'translateY(-50%)',
-              transition: 'left 0.38s cubic-bezier(0.34,1.56,0.64,1)',
-              boxShadow: isDark
-                ? '0 2px 8px rgba(0,0,0,0.65)'
-                : '0 2px 6px rgba(0,0,0,0.14)',
-              pointerEvents: 'none',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              {/* Ícono luna (SVG línea) */}
-              <svg
-                style={{ position: 'absolute', opacity: isDark ? 1 : 0, transition: 'opacity 0.22s ease' }}
-                width="13" height="13" viewBox="0 0 24 24"
-                fill="none" stroke="#334155" strokeWidth="2.2"
-                strokeLinecap="round" strokeLinejoin="round"
-              >
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-              </svg>
-              {/* Ícono sol (SVG línea) */}
-              <svg
-                style={{ position: 'absolute', opacity: isDark ? 0 : 1, transition: 'opacity 0.22s ease' }}
-                width="13" height="13" viewBox="0 0 24 24"
-                fill="none" stroke="#c07a10" strokeWidth="2.2"
-                strokeLinecap="round" strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="4.5"/>
-                <line x1="12" y1="2" x2="12" y2="4"/>
-                <line x1="12" y1="20" x2="12" y2="22"/>
-                <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/>
-                <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/>
-                <line x1="2" y1="12" x2="4" y2="12"/>
-                <line x1="20" y1="12" x2="22" y2="12"/>
-                <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/>
-                <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/>
-              </svg>
-            </span>
-          </button>
-
-          {/* Campana de notificaciones */}
-          <NotificationBell />
-
-          {/* Menú del usuario (avatar + nombre + rol) */}
-          <div className="relative">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setMenuOpen((m) => (m === "user" ? null : "user"));
-              }}
-              className={MENU_TRIGGER}
-              aria-haspopup="menu"
-              aria-expanded={menuOpen === "user"}
-              title={meUsername}
-            >
-              <Avatar src={me?.avatarDataUrl || undefined} name={meDisplay} size={20} />
-              <span className="hidden sm:inline text-neutral-200">{meDisplay}</span>
-              <span className="hidden md:inline px-2 py-0.5 rounded-lg text-[11px] bg-neutral-800 text-neutral-300">
-                {ROLE_LABELS[meRole] || meRole}
-              </span>
-              ▾
-            </button>
-
-            {menuOpen === "user" && (
-              <div
-                role="menu"
-                className="absolute right-0 mt-2 w-64 rounded-xl border border-neutral-800 bg-neutral-900 shadow-2xl p-2 z-50"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <button
-                  onClick={() => {
-                    setMenuOpen(null);
-                    setProfileOpen(true);
-                  }}
-                  className={MENU_ITEM}
-                >
-                  👤 Mi perfil
-                </button>
-                <button
-                  onClick={() => {
-                    setMenuOpen(null);
-                    setUserConfigOpen(true);
-                  }}
-                  className={MENU_ITEM}
-                >
-                  ⚙️ Configuración
-                </button>
-
-                {myPerms?.actions?.manageUsers && (
-                  <button
-                    onClick={() => {
-                      setMenuOpen(null);
-                      setUsersOpen(true);
-                    }}
-                    className={MENU_ITEM}
-                  >
-                    👥 Gestionar usuarios
-                  </button>
-                )}
-
-                <button
-                  onClick={() => {
-                    setMenuOpen(null);
-                    handleLogout();
-                  }}
-                  className={MENU_ITEM}
-                >
-                  🚪 Cerrar sesión
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
+        </header>
 
       {/* ===== Panel de Reclamos ===== */}
       {modoActivo === "reclamos" && me && (
@@ -2374,7 +2208,7 @@ return (
       })()}
 
       {/* Filtros */}
-      <div className="sticky top-0 z-10 rounded-2xl border border-neutral-800 bg-neutral-900 p-3">
+      <div className="sticky z-10 rounded-2xl border border-neutral-800 bg-neutral-900 p-3" style={{ top: 'var(--df-topbar-height)' }}>
         <div className="flex items-center gap-2 mb-3 md:mb-4">
           <span className="text-xs text-neutral-400">
             Liquidación:{" "}
@@ -2936,6 +2770,7 @@ return (
       {/* Toasts */}
       <ToastsFragment toasts={toasts} onDismiss={dismissToast} />
     </div>
+  </div>
   );
 }
 

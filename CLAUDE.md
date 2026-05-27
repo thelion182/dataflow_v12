@@ -1,4 +1,4 @@
-# Dataflow v11 — Contexto del proyecto para Claude Code
+# Dataflow v12 — Contexto del proyecto para Claude Code
 
 ## Qué es esto
 App web interna para la Gerencia de RRHH de Círculo Católico (mutual uruguaya).
@@ -29,7 +29,8 @@ Login inicial: `admin / Admin-1234` · `superadmin / Super-1234`
 - **v8**: abstracción completa + API skeletons + backend Node.js/Express completo + Docker
 - **v9pruebas**: backend activo por defecto (VITE_USE_API=true) + sistema de auditoría completo + SSE
 - **v10**: estados automáticos desde observaciones, campana de notificaciones, config por usuario, modal procesar dudas (Sueldos), vista por sector, SSE descarga, fix reclamos DB constraint, tipo de archivo en tabla
-- **v11** (actual): estado 'Con arreglos (N)' diferenciado, columna 'Dudas/Arreglos', badges verdes cuando procesados, bloqueo re-descarga ZIP para Sueldos, arreglos colapsables en trazabilidad con procesamiento por fila
+- **v11**: estado 'Con arreglos (N)' diferenciado, columna 'Dudas/Arreglos', badges verdes cuando procesados, bloqueo re-descarga ZIP para Sueldos, arreglos colapsables en trazabilidad con procesamiento por fila
+- **v12** (actual): rediseño visual completo — sidebar de navegación fija, topbar limpia, paleta carbon (#0f1115–#222938), tipografía Inter, badges de tipo de archivo con color, tokens CSS personalizados, modo Día/Noche mejorado
 
 ## Arquitectura del frontend
 ```

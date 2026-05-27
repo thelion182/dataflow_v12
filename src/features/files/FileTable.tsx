@@ -148,10 +148,12 @@ export function FileTable({
                     </td>
 
                     <td className="px-4 py-3 text-neutral-200">{f.name}</td>
-                    <td className="px-4 py-3 text-neutral-400">
-                      <span className="px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-300 text-[11px] font-mono">
-                        {f.fileType || (f.name ? f.name.split('.').pop()?.toUpperCase() : 'FILE') || 'FILE'}
-                      </span>
+                    <td className="px-4 py-3">
+                      {(() => {
+                        const ext = (f.fileType || (f.name ? f.name.split('.').pop() : '') || '').toLowerCase();
+                        const known = ['csv','xlsx','xls','txt','pdf','ods','zip'].includes(ext);
+                        return <span className={`df-badge df-file-${known ? ext : 'default'}`}>{ext.toUpperCase() || 'FILE'}</span>;
+                      })()}
                     </td>
                     <td className="px-4 py-3 text-neutral-400">{prettyBytes(f.size)}</td>
 
