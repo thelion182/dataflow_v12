@@ -1,0 +1,61 @@
+version: '3.9'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Dataflow v12 — Docker Compose
+#
+# Lee variables del .env en la raíz del proyecto.
+#
+# PASOS PARA LEVANTAR (primera vez):
+#   1. docker compose up -d
+#   2. docker compose exec db psql -U dataflow -d dataflow -f /sql/01_schema.sql
+#   3. docker compose exec db psql -U dataflow -d dataflow -f /sql/02_seed.sql
+#   4. npm install && npm run dev
+#   5. Abrir http://localhost:5173  (o http://<tu-IP>:5173 desde Mac/iPhone)
+#      Login: admin / Admin-1234
+#
+# Para ver qué usuario existe en postgres si hay dudas:
+#   docker compose exec db psql -U dataflow -d dataflow -c "\du"
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  db:
+    image: postgres:15-alpine
+    container_name: dataflow_v12_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER:     ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB:       ${POSTGRES_DB}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/sql:/sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dataflow_v12_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env
+    ports:
+      - "${PORT}:${PORT}"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - uploads:/app/uploads
+
+volumes:
+  pgdata:
+  uploads:

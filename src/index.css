@@ -1,0 +1,338 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  display: block; /* importante */
+}
+
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+html, body, #root {
+  height: 100%;
+}
+html, body {
+  overflow-x: hidden;
+  background: #0a0a0a;
+  color: #f5f5f5; /* opcional */
+}
+/* Evita el fondo blanco nativo de Safari/macOS en botones */
+button, [type="button"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+#root {
+  width: 100%;
+}
+
+/* Animación de transición entre modos Información / Reclamos */
+@keyframes modoEntrar {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modo-panel {
+  animation: modoEntrar 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Animación de entrada para modales del módulo Reclamos */
+@keyframes reclamoModalEntrar {
+  from {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.reclamo-modal {
+  animation: reclamoModalEntrar 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MODO CLARO — Light Mode Overrides
+   Paleta moderna tipo Vercel/Linear. Activado con data-theme="light" en <html>
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Variables CSS del tema */
+:root {
+  --df-toggle-off: #404040;
+  --df-page-bg: transparent;
+  --df-card-shadow: none;
+}
+[data-theme="light"] {
+  --df-toggle-off: #cbd5e1;
+  --df-page-bg: #f7f8fc;
+  --df-card-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05);
+}
+
+/* ── Base ── */
+[data-theme="light"] html,
+[data-theme="light"] body,
+[data-theme="light"] #root {
+  background-color: #f7f8fc !important;
+  color: #0f172a !important;
+}
+
+/* Overlay de modales: negro → gris oscuro translúcido */
+[data-theme="light"] .bg-black\/80 { background-color: rgba(15,23,42,0.35) !important; }
+[data-theme="light"] .bg-black\/70 { background-color: rgba(15,23,42,0.28) !important; }
+
+/* ── neutral-950 (el más oscuro) → fondo de página ── */
+[data-theme="light"] .bg-neutral-950     { background-color: #f7f8fc !important; }
+[data-theme="light"] .bg-neutral-950\/95 { background-color: rgba(247,248,252,0.97) !important; }
+[data-theme="light"] .bg-neutral-950\/60 { background-color: #f0f4fa !important; }
+[data-theme="light"] .bg-neutral-950\/40 { background-color: #f5f7fc !important; }
+
+/* ── neutral-900 → tarjetas blancas con sombra suave ── */
+[data-theme="light"] .bg-neutral-900 {
+  background-color: #ffffff !important;
+  box-shadow: var(--df-card-shadow) !important;
+}
+[data-theme="light"] .bg-neutral-900\/40 {
+  background-color: #ffffff !important;
+  box-shadow: var(--df-card-shadow) !important;
+}
+[data-theme="light"] .bg-neutral-900\/50 {
+  background-color: #f8fafc !important;
+  box-shadow: none !important;
+}
+[data-theme="light"] .bg-neutral-900\/60 {
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+}
+[data-theme="light"] .bg-neutral-900\/80 { background-color: rgba(255,255,255,0.98) !important; }
+
+/* ── neutral-800 → superficie secundaria ── */
+[data-theme="light"] .bg-neutral-800     { background-color: #eef1f6 !important; box-shadow: none !important; }
+[data-theme="light"] .bg-neutral-800\/20 { background-color: rgba(238,241,246,0.5) !important; }
+[data-theme="light"] .bg-neutral-800\/30 { background-color: rgba(238,241,246,0.7) !important; }
+[data-theme="light"] .bg-neutral-800\/40 { background-color: rgba(238,241,246,0.85) !important; }
+[data-theme="light"] .bg-neutral-800\/50 { background-color: rgba(238,241,246,0.92) !important; }
+[data-theme="light"] .bg-neutral-800\/60 { background-color: rgba(238,241,246,0.96) !important; }
+
+/* ── neutral-700/600/500 → grises medios claros ── */
+[data-theme="light"] .bg-neutral-700 { background-color: #e2e8f0 !important; }
+[data-theme="light"] .bg-neutral-600 { background-color: #cbd5e1 !important; }
+[data-theme="light"] .bg-neutral-500 { background-color: #94a3b8 !important; }
+[data-theme="light"] .bg-black       { background-color: #e2e8f0 !important; }
+
+/* ── Hover fondos ── */
+[data-theme="light"] .hover\:bg-neutral-900\/80:hover  { background-color: rgba(248,250,252,0.98) !important; }
+[data-theme="light"] .hover\:bg-neutral-800:hover      { background-color: #eef1f6 !important; box-shadow: none !important; }
+[data-theme="light"] .hover\:bg-neutral-800\/40:hover  { background-color: rgba(238,241,246,0.85) !important; }
+[data-theme="light"] .hover\:bg-neutral-800\/50:hover  { background-color: rgba(226,232,240,0.70) !important; }
+[data-theme="light"] .hover\:bg-neutral-700:hover      { background-color: #e2e8f0 !important; }
+[data-theme="light"] .hover\:bg-neutral-900\/40:hover  { background-color: rgba(240,245,255,0.6) !important; }
+
+/* ── Focus / active ── */
+[data-theme="light"] .focus\:bg-neutral-800\/60:focus   { background-color: rgba(238,241,246,0.96) !important; }
+[data-theme="light"] .active\:bg-neutral-800\/70:active { background-color: rgba(226,232,240,0.95) !important; }
+[data-theme="light"] .active\:bg-neutral-900\/70:active { background-color: rgba(248,250,252,0.98) !important; }
+
+/* ── Texto ── */
+[data-theme="light"] .text-white         { color: #0f172a !important; }
+[data-theme="light"] .text-neutral-50    { color: #0f172a !important; }
+[data-theme="light"] .text-neutral-100   { color: #1e293b !important; }
+[data-theme="light"] .text-neutral-200   { color: #1e293b !important; }
+[data-theme="light"] .text-neutral-300   { color: #334155 !important; }
+[data-theme="light"] .text-neutral-400   { color: #64748b !important; }
+[data-theme="light"] .text-neutral-500   { color: #8898aa !important; }
+[data-theme="light"] .text-neutral-600   { color: #9baebf !important; }
+
+/* ── Hover texto ── */
+[data-theme="light"] .hover\:text-white:hover       { color: #0f172a !important; }
+[data-theme="light"] .hover\:text-neutral-200:hover { color: #1e293b !important; }
+[data-theme="light"] .hover\:text-neutral-100:hover { color: #0f172a !important; }
+
+/* ── Bordes ── */
+[data-theme="light"] .border-neutral-900 { border-color: #eef1f6 !important; }
+[data-theme="light"] .border-neutral-800 { border-color: #e2e8f0 !important; }
+[data-theme="light"] .border-neutral-700 { border-color: #c8d4e3 !important; }
+[data-theme="light"] .border-neutral-600 { border-color: #94a3b8 !important; }
+
+/* Divide */
+[data-theme="light"] .divide-neutral-800 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #e2e8f0 !important;
+}
+
+/* ── Sombras ── */
+[data-theme="light"] .shadow-2xl {
+  box-shadow: 0 4px 32px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06) !important;
+}
+[data-theme="light"] .shadow-xl {
+  box-shadow: 0 2px 20px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05) !important;
+}
+[data-theme="light"] .shadow-lg {
+  box-shadow: 0 1px 14px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.04) !important;
+}
+[data-theme="light"] .shadow-sm {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04) !important;
+}
+
+/* ── Inputs, selects, textareas ── */
+[data-theme="light"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+  border-color: #d8e0eb !important;
+}
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder { color: #9baebf !important; }
+[data-theme="light"] select option { background: #ffffff; color: #0f172a; }
+
+/* ── Scrollbar (Webkit) ── */
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: #c8d4e3 !important; border-radius: 4px; }
+[data-theme="light"] ::-webkit-scrollbar-track { background: #f0f4fa !important; }
+
+/* ── Tabla: filas y hover ── */
+[data-theme="light"] .odd\:bg-neutral-900\/30:nth-child(odd)  { background-color: #fafbfe !important; }
+[data-theme="light"] .even\:bg-neutral-800\/20:nth-child(even) { background-color: #ffffff !important; }
+[data-theme="light"] .hover\:bg-neutral-800\/50:hover { background-color: rgba(240,245,255,0.8) !important; }
+
+/* ── Zona de upload: dashed → azul suave ── */
+[data-theme="light"] .border-dashed.border-neutral-700 {
+  border-color: #93c5fd !important;
+  background-color: #f0f6ff !important;
+}
+[data-theme="light"] .border-dashed.hover\:border-neutral-500:hover,
+[data-theme="light"] .border-dashed:hover {
+  border-color: #3b82f6 !important;
+  background-color: #e8f2ff !important;
+}
+[data-theme="light"] .border-dashed.border-neutral-800 {
+  border-color: #c8d4e3 !important;
+  background-color: #f5f7fc !important;
+}
+
+/* ── Chips de pendientes en header ── */
+[data-theme="light"] .border-amber-500\/60 { border-color: rgba(245,158,11,0.45) !important; }
+[data-theme="light"] .bg-amber-500\/10     { background-color: rgba(245,158,11,0.07) !important; }
+[data-theme="light"] .border-green-500\/60 { border-color: rgba(34,197,94,0.45) !important; }
+[data-theme="light"] .bg-green-500\/10     { background-color: rgba(34,197,94,0.07) !important; }
+
+/* ── Kanban reclamos ── */
+[data-theme="light"] .bg-blue-500\/10  { background-color: rgba(59,130,246,0.06) !important; }
+[data-theme="light"] .bg-amber-500\/10 { background-color: rgba(245,158,11,0.06) !important; }
+[data-theme="light"] .bg-green-500\/10 { background-color: rgba(34,197,94,0.06)  !important; }
+[data-theme="light"] .bg-rose-500\/10  { background-color: rgba(244,63,94,0.06)  !important; }
+
+/* ── Badges de observaciones ── */
+[data-theme="light"] .bg-amber-900\/30  { background-color: rgba(245,158,11,0.09) !important; }
+[data-theme="light"] .bg-emerald-900\/30 { background-color: rgba(16,185,129,0.09) !important; }
+[data-theme="light"] .border-amber-700  { border-color: rgba(217,119,6,0.35) !important; }
+[data-theme="light"] .border-emerald-700 { border-color: rgba(4,120,87,0.35) !important; }
+
+/* ── Hover rose (reclamos rechazados) ── */
+[data-theme="light"] .hover\:bg-rose-900\/30:hover { background-color: rgba(244,63,94,0.07) !important; }
+
+/* ── Sticky filter bar: leve sombra al hacer scroll ── */
+[data-theme="light"] .sticky.bg-neutral-900 {
+  background-color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06) !important;
+}
+
+/* ── Header de tabla "Mostrando archivos de" ── */
+[data-theme="light"] thead.bg-neutral-900\/60 tr th,
+[data-theme="light"] thead tr th {
+  background-color: #f5f7fb !important;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* ── Modo reclamos en claro: neon azul más intenso en el panel ── */
+[data-theme="light"] .border-blue-500\/30 { border-color: rgba(59,130,246,0.45) !important; }
+[data-theme="light"] .bg-blue-500\/10     { background-color: rgba(59,130,246,0.09) !important; }
+
+/* Botón Nuevo reclamo — efecto neon sutil desde el fondo */
+@keyframes neonPulse {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+.nuevo-reclamo-btn {
+  background: #2563eb !important;
+  box-shadow: none;
+  transform: scale(1);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.3s ease,
+              background 0.3s ease;
+}
+.nuevo-reclamo-btn:hover {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6, #1d4ed8) !important;
+  background-size: 200% 200% !important;
+  animation: neonPulse 2.5s ease infinite;
+  transform: scale(1.05);
+  box-shadow:
+    inset 0 1px 0 #60a5fa22,
+    0 0 10px #3b82f628,
+    0 2px 16px #1d4ed830;
+  border-color: transparent !important;
+}
