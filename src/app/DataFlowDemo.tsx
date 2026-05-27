@@ -2769,7 +2769,6 @@ return (
 
       {/* Toasts */}
       <ToastsFragment toasts={toasts} onDismiss={dismissToast} />
-    </div>
   </div>
   );
 }
