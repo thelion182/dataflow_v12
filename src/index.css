@@ -244,7 +244,7 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
 }
 .df-kpi-card:hover { border-color: var(--df-border-default); box-shadow: var(--df-shadow-card); }
 .df-kpi-icon {
-  width: 36px; height: 36px; border-radius: var(--df-radius-md);
+  width: 42px; height: 42px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .df-kpi-value {
@@ -264,6 +264,80 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
 .df-kpi-delta.down   { color: #f87171; }
 .df-kpi-delta.warn   { color: #fbbf24; }
 .df-kpi-delta.neutral{ color: var(--df-text-muted); }
+
+/* ── KPI icon containers (colores por tarjeta) ─────────── */
+.df-kpi-icon-indigo { background: rgba(99,102,241,0.15);  color: #818cf8; }
+.df-kpi-icon-amber  { background: rgba(251,191,36,0.15);  color: #fbbf24; }
+.df-kpi-icon-blue   { background: rgba(96,165,250,0.15);  color: #60a5fa; }
+.df-kpi-icon-emerald{ background: rgba(52,211,153,0.15);  color: #34d399; }
+.df-kpi-icon-violet { background: rgba(167,139,250,0.15); color: #a78bfa; }
+
+/* KPI card interactivo (clickeable) */
+.df-kpi-card-interactive { cursor: pointer; }
+.df-kpi-card-interactive:hover { transform: translateY(-1px); }
+
+/* ── Sidebar help card ──────────────────────────────────── */
+.df-sidebar-help {
+  margin: 0 8px 10px;
+  padding: 12px 14px;
+  background: rgba(99,102,241,0.08);
+  border: 1px solid rgba(99,102,241,0.18);
+  border-radius: 10px;
+}
+.df-sidebar-help-title {
+  font-size: 12px; font-weight: 600; color: var(--df-text-primary);
+  margin-bottom: 3px;
+}
+.df-sidebar-help-sub {
+  font-size: 11px; color: var(--df-text-muted); margin-bottom: 8px;
+}
+.df-sidebar-help-link {
+  font-size: 11px; font-weight: 500; color: var(--df-accent);
+  background: none; border: none; cursor: pointer; padding: 0;
+  display: inline-flex; align-items: center; gap: 3px;
+}
+.df-sidebar-help-link:hover { color: #a5b4fc; text-decoration: underline; }
+
+/* ── Upload zone v12 ────────────────────────────────────── */
+.df-upload-zone-v12 {
+  border-radius: 16px;
+  border: 2px dashed var(--df-border-default);
+  background: var(--df-bg-surface);
+  transition: all 200ms;
+  padding: 40px 24px;
+  text-align: center;
+  cursor: pointer;
+  display: block;
+}
+.df-upload-zone-v12:hover { border-color: var(--df-accent); background: rgba(99,102,241,0.04); }
+.df-upload-zone-v12.dragging { border-color: var(--df-accent); background: rgba(99,102,241,0.08); }
+.df-upload-zone-v12.disabled { cursor: not-allowed; opacity: 0.55; }
+.df-upload-icon-wrap {
+  width: 68px; height: 68px; border-radius: 16px;
+  background: rgba(99,102,241,0.15);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+}
+.df-upload-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 20px; border-radius: 8px;
+  background: var(--df-accent); color: #fff; font-size: 13px; font-weight: 500;
+  border: none; cursor: pointer; margin-top: 12px;
+  transition: background var(--df-transition);
+}
+.df-upload-btn:hover { background: var(--df-accent-hover); }
+.df-upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Tabla: tres puntos ─────────────────────────────────── */
+.df-row-menu-btn {
+  width: 30px; height: 30px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none; cursor: pointer;
+  color: var(--df-text-muted);
+  font-size: 18px; font-weight: 700; letter-spacing: -1px;
+  transition: all var(--df-transition);
+}
+.df-row-menu-btn:hover { background: var(--df-bg-hover); color: var(--df-text-primary); }
 
 /* ── Botones v12 ────────────────────────────────────────── */
 .df-btn {

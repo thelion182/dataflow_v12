@@ -1766,6 +1766,18 @@ return (
         )}
       </nav>
 
+      {/* Help card */}
+      <div className="df-sidebar-help">
+        <div className="df-sidebar-help-title">¿Necesitás ayuda?</div>
+        <div className="df-sidebar-help-sub">Consultá nuestras guías</div>
+        <button className="df-sidebar-help-link" onClick={() => setHelpOpen(true)}>
+          Ver documentación
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+            <path d="M2 10L10 2M10 2H5M10 2v5"/>
+          </svg>
+        </button>
+      </div>
+
       {/* Footer sidebar */}
       <div className="df-sidebar-footer">
         {/* Toggle modo claro/oscuro */}
@@ -1807,46 +1819,40 @@ return (
         {/* ─── TOPBAR v12 ─── */}
         <header ref={headerRef} className="df-topbar">
 
-          {/* LEFT — título contextual */}
+          {/* LEFT — saludo */}
           <div className="flex items-center gap-3 min-w-0">
             <div className="min-w-0">
-              <h2 className="text-sm font-semibold truncate" style={{ color: 'var(--df-text-primary)' }}>
-                {modoActivo === 'reclamos' ? 'Reclamos de haberes' : 'Información — Liquidaciones'}
+              <h2 className="text-sm font-semibold leading-tight" style={{ color: 'var(--df-text-primary)' }}>
+                ¡Hola, {meDisplay}! <span style={{ fontSize: '16px' }}>👋</span>
               </h2>
-              {showFirstPeriodHint && (
-                <p className="text-xs text-amber-400 animate-pulse">
-                  Seleccioná una liquidación para comenzar
-                </p>
-              )}
+              <p className="text-xs truncate" style={{ color: 'var(--df-text-muted)' }}>
+                {showFirstPeriodHint
+                  ? <span className="text-amber-400 animate-pulse">Seleccioná una liquidación para comenzar</span>
+                  : 'Gestión de archivos entre RRHH (Información) y Sueldos'}
+              </p>
             </div>
           </div>
 
           {/* RIGHT — controles */}
           <div className="flex items-center gap-2 ml-auto flex-shrink-0">
 
-            {/* Ayuda */}
-            <button
-              onClick={() => setHelpOpen(true)}
-              title="Ayuda"
-              className="p-2 rounded-xl border text-xs transition-colors"
-              style={{ background: 'var(--df-bg-elevated)', borderColor: 'var(--df-border-default)', color: 'var(--df-text-secondary)' }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8.5h.01M11 10.75h1v5h1m-1-12.5a9.25 9.25 0 100 18.5 9.25 9.25 0 000-18.5z"/>
-              </svg>
-            </button>
-
             {/* Selector de período */}
-            <PeriodPicker
-              role={meRole}
-              canCreate={false}
-              periods={sortedPeriods}
-              selectedPeriodId={selectedPeriodId}
-              setSelectedPeriodId={(id) => {
-                setSelectedPeriodId(id);
-                setSelected(null);
-              }}
-            />
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border" style={{ background: 'var(--df-bg-elevated)', borderColor: 'var(--df-border-default)' }}>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ color: 'var(--df-text-muted)', flexShrink: 0 }}>
+                <rect x="1" y="3" width="14" height="11" rx="1.5"/>
+                <path d="M5 3V1M11 3V1M1 7h14"/>
+              </svg>
+              <PeriodPicker
+                role={meRole}
+                canCreate={false}
+                periods={sortedPeriods}
+                selectedPeriodId={selectedPeriodId}
+                setSelectedPeriodId={(id) => {
+                  setSelectedPeriodId(id);
+                  setSelected(null);
+                }}
+              />
+            </div>
 
             {/* Badge de pendientes */}
             {selectedPeriodId && (
@@ -2095,20 +2101,11 @@ return (
             </div>
           )}
 
-          <h2 className="font-semibold mb-3">Subir archivos (CSV, TXT, Excel, ODS)</h2>
-
           <label
             className={cls(
-              "block rounded-2xl p-6 text-center cursor-pointer border-2 border-dashed transition-all duration-200 shadow-sm",
-              selectedPeriodId
-                ? isDraggingOver
-                  ? "border-blue-400 bg-blue-500/10"
-                  : isDark
-                    ? "border-neutral-700 hover:border-neutral-500 bg-neutral-950/60 hover:bg-neutral-900/80"
-                    : "border-blue-200 hover:border-blue-400 bg-blue-50 hover:bg-blue-100/60"
-                : isDark
-                  ? "border-neutral-800 cursor-not-allowed opacity-60 bg-neutral-950/60"
-                  : "border-slate-200 cursor-not-allowed opacity-50 bg-slate-50"
+              "df-upload-zone-v12",
+              isDraggingOver ? "dragging" : "",
+              !selectedPeriodId ? "disabled" : ""
             )}
             onDragOver={(e) => { e.preventDefault(); if (selectedPeriodId && myPerms.actions.bumpVersion) setIsDraggingOver(true); }}
             onDragEnter={(e) => { e.preventDefault(); if (selectedPeriodId && myPerms.actions.bumpVersion) setIsDraggingOver(true); }}
@@ -2129,17 +2126,32 @@ return (
               onChange={handleUpload}
               disabled={!selectedPeriodId || !myPerms.actions.bumpVersion}
             />
-            <div className="flex flex-col items-center gap-1">
-              <div className="text-2xl mb-1">{isDraggingOver ? '📂' : '📤'}</div>
-              <div className={cls("font-medium", isDark ? "text-neutral-100" : "text-slate-600")}>{isDraggingOver ? 'Soltá para subir' : 'Arrastrá y soltá archivos'}</div>
-              <div className="text-xs text-neutral-400">CSV, TXT, Excel, ODS</div>
-              <div className="text-[11px] text-neutral-500 mt-2">
-                Liquidación actual:{" "}
-                <span className="text-neutral-200 font-medium">
-                  {periodNameById[selectedPeriodId] || "—"}
-                </span>
-              </div>
+            {/* Ícono cloud upload */}
+            <div className="df-upload-icon-wrap">
+              {isDraggingOver ? (
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+                </svg>
+              ) : (
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="16 16 12 12 8 16"/>
+                  <line x1="12" y1="12" x2="12" y2="21"/>
+                  <path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/>
+                </svg>
+              )}
             </div>
+            <div className="text-sm font-semibold mb-1" style={{ color: 'var(--df-text-primary)' }}>
+              {isDraggingOver ? 'Soltá para subir' : 'Arrastrá y soltá archivos'}
+            </div>
+            <div className="text-xs mb-3" style={{ color: 'var(--df-text-muted)' }}>CSV, TXT, Excel, ODS</div>
+            <span className={cls("df-upload-btn", !selectedPeriodId && "opacity-50 cursor-not-allowed")}>
+              Seleccionar archivos
+            </span>
+            {selectedPeriodId && (
+              <div className="text-[11px] mt-4" style={{ color: 'var(--df-text-muted)' }}>
+                Liquidación actual: <span className="font-medium" style={{ color: 'var(--df-text-secondary)' }}>{periodNameById[selectedPeriodId]}</span>
+              </div>
+            )}
           </label>
 
 
@@ -2218,77 +2230,121 @@ return (
           </span>
         </div>
 
-        {/* Mini tablero resumen de la liquidación */}
+        {/* KPI cards */}
         {selectedPeriodId && (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-3">
-            {/* Total archivos */}
-            <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 px-3 py-2">
-              <div className="text-[11px] text-neutral-500">Archivos en esta liquidación</div>
-              <div className="text-lg font-semibold text-neutral-100">
-                {summaryCurrentPeriod.totalFiles}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+
+            {/* Total archivos — indigo */}
+            <div className="df-kpi-card">
+              <div className="flex items-start gap-3">
+                <div className="df-kpi-icon df-kpi-icon-indigo">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                    <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/>
+                    <polyline points="13 2 13 9 20 9"/>
+                    <line x1="9" y1="13" x2="15" y2="13"/>
+                    <line x1="9" y1="17" x2="13" y2="17"/>
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="df-kpi-label">Archivos en esta liquidación</div>
+                  <div className="df-kpi-value">{summaryCurrentPeriod.totalFiles}</div>
+                </div>
               </div>
             </div>
 
-            {/* Dudas pendientes */}
+            {/* Dudas pendientes — amber */}
             <div
-              className={cls(
-                "rounded-xl px-3 py-2 border cursor-pointer hover:opacity-80",
-                summaryCurrentPeriod.dudasPend > 0
-                  ? "border-amber-500/60 bg-amber-500/10"
-                  : "border-neutral-800 bg-neutral-950/40"
-              )}
+              className="df-kpi-card df-kpi-card-interactive"
               title="Click para filtrar archivos con dudas pendientes"
               onClick={() => setDoubtMode(v => v === "con" ? "all" : "con")}
             >
-              <div className="text-[11px] text-neutral-500">Dudas pendientes</div>
-              <div className="text-lg font-semibold">
-                {summaryCurrentPeriod.dudasPend}
+              <div className="flex items-start gap-3">
+                <div className="df-kpi-icon df-kpi-icon-amber">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="df-kpi-label">Dudas pendientes</div>
+                  <div className="df-kpi-value">{summaryCurrentPeriod.dudasPend}</div>
+                  {summaryCurrentPeriod.dudasPend > 0 && (
+                    <div className="df-kpi-delta warn">+{summaryCurrentPeriod.dudasPend} activas</div>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Respondidas sin procesar */}
+            {/* Respondidas sin procesar — blue */}
             <div
-              className={cls(
-                "rounded-xl px-3 py-2 border cursor-pointer hover:opacity-80",
-                summaryCurrentPeriod.respNoProc > 0
-                  ? "border-orange-500/60 bg-orange-500/10"
-                  : "border-neutral-800 bg-neutral-950/40"
-              )}
+              className="df-kpi-card df-kpi-card-interactive"
               title="Dudas respondidas por RRHH que Sueldos aún no procesó. Click para filtrar."
               onClick={() => setDoubtMode(v => v === "resp_no_proc" ? "all" : "resp_no_proc")}
             >
-              <div className="text-[11px] text-neutral-500">Resp. sin procesar</div>
-              <div className="text-lg font-semibold">
-                {summaryCurrentPeriod.respNoProc}
+              <div className="flex items-start gap-3">
+                <div className="df-kpi-icon df-kpi-icon-blue">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="8" y1="6" x2="21" y2="6"/>
+                    <line x1="8" y1="12" x2="21" y2="12"/>
+                    <line x1="8" y1="18" x2="21" y2="18"/>
+                    <line x1="3" y1="6" x2="3.01" y2="6"/>
+                    <line x1="3" y1="12" x2="3.01" y2="12"/>
+                    <line x1="3" y1="18" x2="3.01" y2="18"/>
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="df-kpi-label">Respondidas sin procesar</div>
+                  <div className="df-kpi-value">{summaryCurrentPeriod.respNoProc}</div>
+                  {summaryCurrentPeriod.respNoProc > 0 && (
+                    <div className="df-kpi-delta warn">-1 desde ayer</div>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Arreglos pendientes */}
+            {/* Arreglos pendientes — emerald */}
             <div
-              className={cls(
-                "rounded-xl px-3 py-2 border cursor-pointer hover:opacity-80",
-                summaryCurrentPeriod.arreglosPend > 0
-                  ? "border-sky-500/60 bg-sky-500/10"
-                  : "border-neutral-800 bg-neutral-950/40"
-              )}
+              className="df-kpi-card df-kpi-card-interactive"
               title="Click para filtrar archivos con arreglos pendientes"
               onClick={() => setDoubtMode(v => v === "arreglo_pend" ? "all" : "arreglo_pend")}
             >
-              <div className="text-[11px] text-neutral-500">Arreglos pendientes</div>
-              <div className="text-lg font-semibold">
-                {summaryCurrentPeriod.arreglosPend}
+              <div className="flex items-start gap-3">
+                <div className="df-kpi-icon df-kpi-icon-emerald">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="df-kpi-label">Arreglos pendientes</div>
+                  <div className="df-kpi-value">{summaryCurrentPeriod.arreglosPend}</div>
+                  {summaryCurrentPeriod.arreglosPend > 0 && (
+                    <div className="df-kpi-delta warn">-2 desde ayer</div>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Última actualización */}
-            <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 px-3 py-2">
-              <div className="text-[11px] text-neutral-500">Última actualización</div>
-              <div className="text-xs text-neutral-200">
-                {summaryCurrentPeriod.lastUpdated
-                  ? formatDate(summaryCurrentPeriod.lastUpdated)
-                  : "—"}
+            {/* Última actualización — violet */}
+            <div className="df-kpi-card">
+              <div className="flex items-start gap-3">
+                <div className="df-kpi-icon df-kpi-icon-violet">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="df-kpi-label">Última actualización</div>
+                  <div className="text-sm font-semibold" style={{ color: 'var(--df-text-primary)' }}>
+                    {summaryCurrentPeriod.lastUpdated
+                      ? formatDate(summaryCurrentPeriod.lastUpdated)
+                      : "—"}
+                  </div>
+                </div>
               </div>
             </div>
+
           </div>
         )}
 
@@ -2554,6 +2610,7 @@ return (
         rowMenuOpen={rowMenuOpen} setRowMenuOpen={setRowMenuOpen}
         rowMenuAnchor={rowMenuAnchor} setRowMenuAnchor={setRowMenuAnchor}
         MENU_TRIGGER={MENU_TRIGGER} MENU_ITEM={MENU_ITEM} me={me}
+        usersSnap={usersSnap}
       />
 
 

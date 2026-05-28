@@ -9,6 +9,7 @@ import {
   pendingArreglosCount, answeredArreglosCount,
 } from "../observations/observationHelpers";
 import { RowMenuPortal } from "./RowMenuPortal";
+import Avatar from "../../components/Avatar";
 
 export function FileTable({
   filtered, periodNameById, selectedPeriodId,
@@ -19,8 +20,14 @@ export function FileTable({
   handleStatusChange, setObserveDialog, blankObsRow, openFileDoubt,
   openAdjustForFile, deleteFile, doDownload, markDownloaded, bumpVersion,
   rowMenuOpen, setRowMenuOpen, rowMenuAnchor, setRowMenuAnchor,
-  MENU_TRIGGER, MENU_ITEM, me,
+  MENU_TRIGGER, MENU_ITEM, me, usersSnap,
 }: any) {
+  // Lookup rápido por id de usuario
+  const userById = React.useMemo(() => {
+    const m = {};
+    (usersSnap || []).forEach(u => { m[u.id] = u; });
+    return m;
+  }, [usersSnap]);
   return (
     <section className="rounded-2xl border border-neutral-800 overflow-visible">
         <div className="px-4 py-2.5 text-xs text-neutral-400 bg-neutral-900/50 border-b border-neutral-800 rounded-t-2xl">
@@ -52,20 +59,21 @@ export function FileTable({
                 </Th>
                 <Th>Archivo</Th>
                 <Th>Nombre</Th>
+                <Th>Usuario</Th>
                 <Th>Tipo</Th>
                 <Th>Tamaño</Th>
                 <Th>Versión</Th>
                 <Th>Estado</Th>
                 <Th>Dudas/Arreglos</Th>
                 <Th>Subido</Th>
-                <Th>Acciones</Th>
+                <Th></Th>
               </tr>
             </thead>
 
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="text-center py-10 text-neutral-500">
+                  <td colSpan={11} className="text-center py-10 text-neutral-500">
                     No hay archivos en esta liquidación.
                   </td>
                 </tr>
@@ -147,7 +155,33 @@ export function FileTable({
                       </button>
                     </td>
 
-                    <td className="px-4 py-3 text-neutral-200">{f.name}</td>
+                    <td className="px-4 py-3 text-neutral-200 max-w-[160px]">
+                      <div className="font-medium truncate">{f.name}</div>
+                      {f.note && <div className="text-[11px] text-neutral-500 truncate">{f.note}</div>}
+                    </td>
+
+                    {/* Usuario que subió */}
+                    <td className="px-4 py-3">
+                      {(() => {
+                        const uploader = userById[f.byUserId] || null;
+                        const name = uploader?.displayName || uploader?.username || f.byUsername || '—';
+                        const role = uploader?.role || '';
+                        return (
+                          <div className="flex items-center gap-2 min-w-[120px]">
+                            <Avatar
+                              src={uploader?.avatarDataUrl || undefined}
+                              name={name}
+                              size={24}
+                            />
+                            <div className="min-w-0">
+                              <div className="text-xs font-medium text-neutral-200 truncate">{name}</div>
+                              {role && <div className="text-[10px] text-neutral-500 capitalize">{role === 'rrhh' ? 'RRHH' : role === 'sueldos' ? 'Sueldos' : role}</div>}
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </td>
+
                     <td className="px-4 py-3">
                       {(() => {
                         const ext = (f.fileType || (f.name ? f.name.split('.').pop() : '') || '').toLowerCase();
@@ -234,29 +268,30 @@ export function FileTable({
                       {formatDate(f.at)}
                     </td>
 
-                    {/* Acciones -> DESPLEGABLE */}
-                    <td className="px-4 py-3">
+                    {/* Acciones -> tres puntos */}
+                    <td className="px-2 py-3">
                       <div className="relative inline-block">
                       <button
-  onClick={(e) => {
-    e.stopPropagation();
-    const el = e.currentTarget as HTMLElement | null;
-    const rect = el ? el.getBoundingClientRect() : null;
-    setRowMenuOpen((prev) => {
-      const next = prev === f.id ? null : f.id;
-      if (next) {
-        if (rect) setRowMenuAnchor(rect);
-        else if (!rowMenuAnchor) setRowMenuAnchor(new DOMRect(8, 8, 0, 0));
-      } else {
-        setRowMenuAnchor(null);
-      }
-      return next;
-    });
-  }}
-  className={MENU_TRIGGER}
->
-  Acciones ▾
-</button>
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const el = e.currentTarget as HTMLElement | null;
+                          const rect = el ? el.getBoundingClientRect() : null;
+                          setRowMenuOpen((prev) => {
+                            const next = prev === f.id ? null : f.id;
+                            if (next) {
+                              if (rect) setRowMenuAnchor(rect);
+                              else if (!rowMenuAnchor) setRowMenuAnchor(new DOMRect(8, 8, 0, 0));
+                            } else {
+                              setRowMenuAnchor(null);
+                            }
+                            return next;
+                          });
+                        }}
+                        className="df-row-menu-btn"
+                        title="Acciones"
+                      >
+                        ⋮
+                      </button>
 
                         {rowMenuOpen === f.id && rowMenuAnchor && (
   <RowMenuPortal

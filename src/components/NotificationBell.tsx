@@ -122,14 +122,19 @@ export function NotificationBell() {
       <button
         onClick={() => { setOpen(v => !v); if (!open && unread > 0) markAllRead(); }}
         className={cls(
-          'relative flex items-center justify-center w-8 h-8 rounded-lg transition-colors',
-          open ? 'bg-neutral-700 text-white' : 'text-neutral-200 hover:text-white hover:bg-neutral-800'
+          'relative flex items-center justify-center w-9 h-9 rounded-xl transition-colors border',
+          open
+            ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300'
+            : 'bg-transparent border-transparent text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 hover:border-neutral-700'
         )}
         title="Notificaciones"
       >
-        <span style={{ fontSize: '18px', lineHeight: 1 }}>🔔</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
         {unread > 0 && (
-          <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[16px] h-4 px-1 text-[10px] font-bold bg-red-500 text-white rounded-full leading-none">
+          <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold bg-indigo-500 text-white rounded-full leading-none border border-[#0f1115]">
             {unread > 99 ? '99+' : unread}
           </span>
         )}

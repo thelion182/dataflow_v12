@@ -18,7 +18,8 @@ export default function PeriodPicker({
     <select
       value={selectedPeriodId}
       onChange={(e) => setSelectedPeriodId(e.target.value)}
-      className="px-3 py-2 rounded-xl bg-neutral-800 outline-none text-sm"
+      className="outline-none text-sm bg-transparent border-none"
+      style={{ color: 'var(--df-text-primary)', minWidth: 110 }}
       aria-label="Seleccionar liquidación"
     >
       <option value="">— Liquidación —</option>
