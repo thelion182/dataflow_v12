@@ -113,17 +113,26 @@ export function AdjustModal({ adjustDialog, fileForAdjust, periodNameById, prett
                         />
                       </div>
 
-                      {/* Días / Horas / Cantidades */}
+                      {/* Cantidad + unidad */}
                       <div className="col-span-3">
-                        <label className="text-xs text-neutral-400">
-                          Días / Horas / Cantidades
-                        </label>
-                        <input
-                          value={r.dhc || ""}
-                          onChange={(e) => setAdjCell(i, "dhc", e.target.value)}
-                          className="w-full px-3 py-2 rounded-xl bg-neutral-800 outline-none"
-                          placeholder="Ej: 3 · 12:00 · 5"
-                        />
+                        <label className="text-xs text-neutral-400">Cantidad</label>
+                        <div className="flex gap-1">
+                          <input
+                            value={r.dhc || ""}
+                            onChange={(e) => setAdjCell(i, "dhc", e.target.value)}
+                            className="flex-1 min-w-0 px-3 py-2 rounded-xl bg-neutral-800 outline-none"
+                            placeholder="Ej: 3"
+                          />
+                          <select
+                            value={r.dhcTipo || "días"}
+                            onChange={(e) => setAdjCell(i, "dhcTipo", e.target.value)}
+                            className="px-2 py-2 rounded-xl bg-neutral-800 outline-none text-xs text-neutral-300"
+                          >
+                            <option value="días">Días</option>
+                            <option value="horas">Horas</option>
+                            <option value="cantidad/$">Cantidad/$</option>
+                          </select>
+                        </div>
                       </div>
 
                       {/* Actividad */}

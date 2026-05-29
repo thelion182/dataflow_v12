@@ -17,6 +17,7 @@ interface ObsRow {
   codigo?: string;
   codDesc?: string;
   dhc?: string;
+  dhcTipo?: string;
   actividad?: string;
   modCampo?: string;
   modDe?: string;
@@ -44,7 +45,7 @@ function arregloNarrativa(r: ObsRow): string {
     partes.push('Alta al código');
     if (r.codigo) partes.push(`"${r.codigo}"`);
     if (r.codDesc) partes.push(`"${r.codDesc}"`);
-    if (r.dhc) partes.push(`${r.dhc} días/horas/cantidad`);
+    if (r.dhc) partes.push(r.dhcTipo ? `${r.dhc} ${r.dhcTipo}` : r.dhc);
     if (r.actividad) partes.push(`a la actividad "${r.actividad}"`);
   } else if (accion === 'modificar') {
     partes.push(`Modificar el ${r.modCampo || 'campo'}`);
@@ -55,7 +56,7 @@ function arregloNarrativa(r: ObsRow): string {
     partes.push('Baja del código');
     if (r.codigo) partes.push(`"${r.codigo}"`);
     if (r.codDesc) partes.push(`"${r.codDesc}"`);
-    if (r.dhc) partes.push(`${r.dhc} días/horas/cantidad`);
+    if (r.dhc) partes.push(r.dhcTipo ? `${r.dhc} ${r.dhcTipo}` : r.dhc);
     if (r.actividad) partes.push(`a la actividad "${r.actividad}"`);
   }
   if (r.cc) partes.push(`CC ${r.cc}`);
