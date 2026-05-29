@@ -1719,7 +1719,7 @@ return (
     <aside className="df-sidebar">
       {/* Logo */}
       <div className="df-sidebar-logo">
-        <Logo className="h-8 w-auto animate-slowspin" />
+        <Logo className="h-9 w-auto animate-slowspin" />
         <span className="df-sidebar-logo-text">Dataflow</span>
       </div>
 
@@ -1951,10 +1951,10 @@ return (
           {/* LEFT — saludo */}
           <div className="flex items-center gap-3 min-w-0">
             <div className="min-w-0">
-              <h2 className="font-semibold leading-tight" style={{ color: 'var(--df-text-primary)', fontSize: '15px' }}>
-                ¡Hola, {meDisplay}! <span style={{ fontSize: '15px' }}>👋</span>
+              <h2 className="font-semibold leading-tight" style={{ color: 'var(--df-text-primary)', fontSize: '18px' }}>
+                ¡Hola, {meDisplay}! <span style={{ fontSize: '18px' }}>👋</span>
               </h2>
-              <p className="truncate" style={{ color: 'var(--df-text-muted)', fontSize: '11px' }}>
+              <p className="truncate" style={{ color: 'var(--df-text-muted)', fontSize: '12px' }}>
                 {showFirstPeriodHint
                   ? <span className="text-amber-400 animate-pulse">Seleccioná una liquidación para comenzar</span>
                   : 'Gestión de archivos entre RRHH (Información) y Sueldos'}
@@ -1989,10 +1989,10 @@ return (
                 type="button"
                 onClick={() => { setDoubtMode("con"); setDoubtValue(""); }}
                 className={cls(
-                  "hidden md:flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[11px] font-medium transition-colors",
+                  "hidden md:flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] font-medium transition-colors",
                   summaryCurrentPeriod.totalPend > 0
-                    ? "border-amber-500/40 bg-amber-500/10 text-amber-300"
-                    : "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
+                    ? "bg-amber-500/10 text-amber-300"
+                    : "bg-emerald-500/10 text-emerald-400"
                 )}
                 title="Ver archivos con dudas pendientes"
               >
@@ -2016,9 +2016,9 @@ return (
                 aria-expanded={menuOpen === "user"}
                 title={meUsername}
               >
-                <Avatar src={me?.avatarDataUrl || undefined} name={meDisplay} size={20} />
-                <span className="hidden sm:inline text-[12px] text-neutral-200">{meDisplay}</span>
-                <span className="hidden md:inline px-2 py-0.5 rounded-lg text-[10px] bg-neutral-800 text-neutral-400">
+                <Avatar src={me?.avatarDataUrl || undefined} name={meDisplay} size={26} />
+                <span className="hidden sm:inline text-[13px] text-neutral-200">{meDisplay}</span>
+                <span className="hidden md:inline px-2 py-0.5 rounded-lg text-[11px] bg-neutral-800 text-neutral-400">
                   {ROLE_LABELS[meRole] || meRole}
                 </span>
                 ▾

@@ -225,7 +225,7 @@ export function FileTable({
                       const role = uploader?.role || '';
                       return (
                         <div className="flex items-center gap-2 min-w-[120px]">
-                          <Avatar src={uploader?.avatarDataUrl || undefined} name={name} size={24} />
+                          <Avatar src={uploader?.avatarDataUrl || undefined} name={name} size={32} />
                           <div className="min-w-0">
                             <div className="text-xs font-medium text-neutral-200 truncate">{name}</div>
                             {role && <div className="text-[10px] text-neutral-500 capitalize">{role === 'rrhh' ? 'RRHH' : role === 'sueldos' ? 'Sueldos' : role}</div>}
