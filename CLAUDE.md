@@ -165,6 +165,11 @@ Ver `BACKEND_GUIDE.md` — guía completa con pasos, SQL, endpoints, LDAP, nginx
 3. `cp .env.example .env.local` → editar `VITE_USE_API=true` y `VITE_API_URL=http://servidor/api`
 4. `npm run dev` — el switch es automático, sin tocar ningún otro archivo
 
+## Cambios en v12 — rediseño integral UI/UX (2026-05-29)
+- `src/index.css`: paleta carbon completa (`--df-bg-page: #0d1526`, sidebar `#121d31`, surface `#121c2f`); light mode gris (`#e8ecf2` base); dropzone gradiente oscuro con glows indigo/azul; `.df-nav-sub-group` y `.df-nav-sub-item` para colapsables del sidebar; MENU_TRIGGER sin borde normal (hover-only)
+- `src/app/DataFlowDemo.tsx`: fondo unificado `#0d1526` (topbar = página); sidebar con items Gestión (colapsable) y Reportes (colapsable) absorbiendo todos los items que antes estaban en el topbar; topbar limpio sin dropdowns; paginación `FILE_PAGE_SIZE=3` + `filePage` + `pagedFiltered`; sección Ayuda (`modoActivo="ayuda"`) con renderer markdown simple, edición solo para superadmin, persistido en `localStorage('dataflow-help-content')`; logo más grande (`h-9`); KPI cards más grandes; nav font 13.5px
+- `src/features/files/FileTable.tsx`: reescrito completo — componente `FileDocIcon` SVG con forma de documento, esquina doblada, gráfico interno por tipo y badge de extensión coloreado (CSV verde, XLSX verde, ODS amarillo-verde, TXT azul, PDF rojo, ZIP púrpura); props `filePage/setFilePage/totalPages/totalFiles`; controles de paginación al pie de la tabla
+
 ## Fixes aplicados desde v11 (2026-05-28)
 - `DataFlowDemo.tsx`: periodsLoadedRef siempre true en API mode (Fix A); overlay "sin liquidación" para rrhh/sueldos (Fix B)
 - `useDownloads.ts`: getNextNumberForUserInPeriod y doDownload aplican a admin/superadmin además de sueldos

@@ -332,18 +332,60 @@ const [pendingUser, setPendingUser] = useState<null | {
   role?: string;
 }>(null);
 
-// ===== Modo activo: Información / Reclamos =====
-const [modoActivo, setModoActivo] = useState<"informacion" | "reclamos">(() => {
+// ===== Modo activo: Información / Reclamos / Ayuda =====
+const [modoActivo, setModoActivo] = useState<"informacion" | "reclamos" | "ayuda">(() => {
   try {
     const v = localStorage.getItem("dataflow_modo_activo");
-    return v === "reclamos" ? "reclamos" : "informacion";
+    return v === "reclamos" ? "reclamos" : v === "ayuda" ? "ayuda" : "informacion";
   } catch { return "informacion"; }
 });
 
-function toggleModo(modo: "informacion" | "reclamos") {
+function toggleModo(modo: "informacion" | "reclamos" | "ayuda") {
   setModoActivo(modo);
   try { localStorage.setItem("dataflow_modo_activo", modo); } catch {}
 }
+
+// ===== Paginación de tabla de archivos =====
+const FILE_PAGE_SIZE = 3;
+const [filePage, setFilePage] = useState(0);
+
+// ===== Contenido de Ayuda (editable por superadmin) =====
+const DEFAULT_HELP =
+`# Documentación Dataflow
+
+## Módulos
+
+**Información** — Gestión de archivos entre RRHH e Información.
+- Subir archivos para cada liquidación
+- Controlar estados (cargado, descargado, con dudas, etc.)
+- Ver trazabilidad completa por archivo
+
+**Gestión** — Administración de liquidaciones, sectores y sedes.
+
+**Reportes** — Exportar inventarios CSV de archivos y descargas.
+
+**Reclamos** — Gestión de reclamos de haberes de funcionarios.
+
+## Estados de archivo
+- **Cargado** — Archivo subido, esperando descarga
+- **Descargado** — Confirmado recibido por Sueldos
+- **Con dudas** — Sueldos registró dudas por funcionario
+- **Con arreglos** — RRHH solicitó correcciones
+- **Procesado** — Dudas o arreglos resueltos
+
+## Flujo de trabajo
+1. RRHH sube archivos en la liquidación del mes
+2. Sueldos descarga y procesa
+3. Si hay dudas, Sueldos las registra en el sistema
+4. RRHH responde y puede adjuntar arreglos
+5. Sueldos procesa las respuestas y cierra el ciclo`;
+
+const [helpContent, setHelpContent] = useState<string>(() => {
+  try { return localStorage.getItem('dataflow-help-content') || DEFAULT_HELP; }
+  catch { return DEFAULT_HELP; }
+});
+const [helpEditing, setHelpEditing] = useState(false);
+const [helpDraft, setHelpDraft] = useState('');
 
 // === [ANCLA-2CLEANUP] LIMPIEZA DE TIMER DEL SPLASH ===
 const splashTimerRef = useRef(null);
@@ -562,6 +604,16 @@ const [sectorViewOnlyPending, setSectorViewOnlyPending] = useState(false); // so
       return true;
     });
   }, [files, q, statusFilter, uploaderFilter, selectedPeriodId, doubtMode, doubtValue, isAdminOrSuper]);
+
+// Resetear página al cambiar filtros
+useEffect(() => { setFilePage(0); }, [q, statusFilter, uploaderFilter, selectedPeriodId, doubtMode, doubtValue]);
+
+// Slice paginado
+const pagedFiltered = useMemo(() =>
+  filtered.slice(filePage * FILE_PAGE_SIZE, (filePage + 1) * FILE_PAGE_SIZE),
+  [filtered, filePage]
+);
+const totalPages = Math.max(1, Math.ceil(filtered.length / FILE_PAGE_SIZE));
 
 // ===============================
 // Helpers: clave sector|sede (ÚNICOS)
@@ -1478,11 +1530,11 @@ async function handleLoginSubmit(e?: React.FormEvent) {
      ========================= */
 
 
-// Botón oscuro "trigger" de los menús (sin blanqueo ni hover fuerte)
+// Botón oscuro "trigger" de los menús — sin borde en reposo, solo al hover
 const MENU_TRIGGER =
-  "px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-sm text-neutral-200 " +
-  "inline-flex items-center gap-1 hover:bg-neutral-900/80 " +
-  "appearance-none focus:outline-none focus:ring-0 active:bg-neutral-900/70";
+  "px-3 py-1.5 rounded-lg bg-transparent border border-transparent text-[12px] text-neutral-300 " +
+  "inline-flex items-center gap-1.5 hover:bg-neutral-800 hover:border-neutral-700 hover:text-neutral-100 " +
+  "appearance-none focus:outline-none focus:ring-0 transition-all";
 
 // Ítems del dropdown (base transparente, sin fondo blanco nativo)
 const MENU_ITEM =
@@ -1641,7 +1693,7 @@ return (
   <div
     className="min-h-screen text-neutral-100 overflow-x-hidden"
     style={{
-      backgroundColor: isDark ? '#0c1018' : '#f5f7fa',
+      backgroundColor: isDark ? '#0d1526' : '#e8ecf2',
       paddingLeft: 'var(--df-sidebar-width)',
     }}
   >
@@ -1653,7 +1705,7 @@ return (
     <aside className="df-sidebar">
       {/* Logo */}
       <div className="df-sidebar-logo">
-        <Logo className="h-7 animate-slowspin" />
+        <Logo className="h-9 animate-slowspin" style={{ minWidth: 36 }} />
         <span className="df-sidebar-logo-text">Dataflow</span>
       </div>
 
@@ -1826,6 +1878,16 @@ return (
           </button>
         )}
 
+        {/* Ayuda / Documentación */}
+        <button onClick={() => toggleModo("ayuda")} className={`df-nav-item ${modoActivo === 'ayuda' ? 'active' : ''}`} title="Documentación y ayuda del sistema">
+          <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="8" cy="8" r="7"/>
+            <path d="M6 6c0-1.1.9-2 2-2s2 .9 2 2c0 1-.7 1.5-1.5 2C7.8 8.5 8 9 8 9.5"/>
+            <line x1="8" y1="12" x2="8.01" y2="12"/>
+          </svg>
+          Ayuda
+        </button>
+
       </nav>
 
       {/* Help card */}
@@ -1970,6 +2032,69 @@ return (
             meId={me.id}
             meNombre={me.displayName || me.username || ""}
           />
+        </div>
+      )}
+
+      {/* ===== Panel de Ayuda / Documentación ===== */}
+      {modoActivo === "ayuda" && (
+        <div key="panel-ayuda" className="modo-panel">
+          <div className="max-w-3xl mx-auto">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-lg font-semibold text-neutral-100">Documentación</h2>
+                <p className="text-xs text-neutral-500 mt-0.5">Guía de uso del sistema Dataflow</p>
+              </div>
+              {isSuperAdmin && !helpEditing && (
+                <button
+                  onClick={() => { setHelpDraft(helpContent); setHelpEditing(true); }}
+                  className="df-btn df-btn-secondary"
+                >
+                  ✏️ Editar
+                </button>
+              )}
+            </div>
+
+            {helpEditing ? (
+              <div className="space-y-3">
+                <textarea
+                  value={helpDraft}
+                  onChange={(e) => setHelpDraft(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl font-mono text-sm leading-relaxed resize-none"
+                  style={{ background: 'var(--df-bg-surface)', border: '1px solid var(--df-border-default)', color: 'var(--df-text-primary)', minHeight: 420, outline: 'none' }}
+                  placeholder="Escribe la documentación en markdown…"
+                />
+                <div className="flex justify-end gap-2">
+                  <button onClick={() => setHelpEditing(false)} className="df-btn df-btn-secondary">Cancelar</button>
+                  <button
+                    onClick={() => {
+                      setHelpContent(helpDraft);
+                      try { localStorage.setItem('dataflow-help-content', helpDraft); } catch {}
+                      setHelpEditing(false);
+                    }}
+                    className="df-btn df-btn-primary"
+                  >
+                    Guardar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div
+                className="rounded-2xl p-6 text-sm leading-relaxed"
+                style={{ background: 'var(--df-bg-surface)', border: '1px solid var(--df-border-subtle)', color: 'var(--df-text-secondary)' }}
+                dangerouslySetInnerHTML={{
+                  __html: helpContent
+                    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                    .replace(/^# (.+)$/gm,'<h2 style="font-size:18px;font-weight:700;color:var(--df-text-primary);margin:0 0 12px">$1</h2>')
+                    .replace(/^## (.+)$/gm,'<h3 style="font-size:14px;font-weight:600;color:var(--df-text-primary);margin:16px 0 6px">$1</h3>')
+                    .replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--df-text-primary)">$1</strong>')
+                    .replace(/^- (.+)$/gm,'<li style="margin:3px 0;padding-left:4px">$1</li>')
+                    .replace(/(<li.*<\/li>)/gs,'<ul style="list-style:disc;padding-left:20px;margin:6px 0">$1</ul>')
+                    .replace(/\n\n/g,'<br/><br/>')
+                    .replace(/\n/g,'<br/>')
+                }}
+              />
+            )}
+          </div>
         </div>
       )}
 
@@ -2474,7 +2599,7 @@ return (
       </div>
 
       <FileTable
-        filtered={filtered} periodNameById={periodNameById} selectedPeriodId={selectedPeriodId}
+        filtered={pagedFiltered} periodNameById={periodNameById} selectedPeriodId={selectedPeriodId}
         effectiveStatus={effectiveStatus} displayStatusForRole={displayStatusForRole}
         meRole={meRole} myPerms={myPerms} isAdmin={isAdmin} isSuperAdmin={isSuperAdmin}
         selectAllRef={selectAllRef} allVisibleSelected={allVisibleSelected}
@@ -2492,6 +2617,8 @@ return (
         rowMenuAnchor={rowMenuAnchor} setRowMenuAnchor={setRowMenuAnchor}
         MENU_TRIGGER={MENU_TRIGGER} MENU_ITEM={MENU_ITEM} me={me}
         usersSnap={usersSnap}
+        filePage={filePage} setFilePage={setFilePage}
+        totalPages={totalPages} totalFiles={filtered.length}
       />
 
 
