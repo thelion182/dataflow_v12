@@ -58,10 +58,8 @@ export function FileTable({
                   />
                 </Th>
                 <Th>Archivo</Th>
-                <Th>Nombre</Th>
                 <Th>Usuario</Th>
                 <Th>Tipo</Th>
-                <Th>Tamaño</Th>
                 <Th>Versión</Th>
                 <Th>Estado</Th>
                 <Th>Dudas/Arreglos</Th>
@@ -73,7 +71,7 @@ export function FileTable({
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="text-center py-10 text-neutral-500">
+                  <td colSpan={9} className="text-center py-10 text-neutral-500">
                     No hay archivos en esta liquidación.
                   </td>
                 </tr>
@@ -98,66 +96,33 @@ export function FileTable({
                       />
                     </td>
 
-                    {/* Miniatura / "Archivo" */}
-                    <td className="px-4 py-3">
-                      <button
+                    {/* Archivo: ícono de tipo + nombre */}
+                    <td className="px-4 py-3 max-w-[240px]">
+                      {(() => {
+                        const ext = (f.fileType || (f.name ? f.name.split('.').pop() : '') || '').toLowerCase();
+                        const FILE_BG: Record<string,string> = { csv:'#16a34a', xlsx:'#15803d', xls:'#15803d', txt:'#334155', pdf:'#b91c1c', ods:'#b45309', zip:'#6d28d9' };
+                        const bg = FILE_BG[ext] || '#3730a3';
+                        return (
+                        <button
                         onClick={() => {
-                          setSelectedThreadId(null); // importante: empezar limpio
+                          setSelectedThreadId(null);
                           setSelected(f.id);
                           setDetailOpen(true);
                         }}
-                        className="group inline-flex h-20 w-20 items-center justify-center rounded-xl border border-neutral-800 bg-white focus:outline-none"
+                        className="group flex items-center gap-3 text-left w-full focus:outline-none"
                         title="Ver detalle y trazabilidad"
                         aria-label={`Ver detalle de ${f.name}`}
                       >
-                        <svg
-                          viewBox="0 0 56 68"
-                          className="h-14 w-11 transition-colors"
-                          fill="none"
-                          aria-hidden="true"
-                        >
-                          {/* Sombra sutil */}
-                          <filter id="fs" x="-10%" y="-5%" width="120%" height="120%">
-                            <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#00000022" />
-                          </filter>
-                          {/* Cuerpo del archivo */}
-                          <path
-                            d="M6 4C6 2.9 6.9 2 8 2H34L50 18V64C50 65.1 49.1 66 48 66H8C6.9 66 6 65.1 6 64V4Z"
-                            fill="#f8f8f8"
-                            filter="url(#fs)"
-                          />
-                          {/* Pliegue */}
-                          <path
-                            d="M34 2L50 18H36C34.9 18 34 17.1 34 16V2Z"
-                            fill="#e0e0e0"
-                          />
-                          {/* Línea diagonal del pliegue */}
-                          <path d="M34 2L50 18" stroke="#d0d0d0" strokeWidth="0.5" />
-                          {/* Banda de color superior (extensión) */}
-                          <rect x="6" y="30" width="44" height="14" rx="1" fill="#3b82f6" opacity="0.15" />
-                          <rect x="6" y="30" width="6" height="14" rx="0" fill="#3b82f6" opacity="0.7"
-                            style={{ clipPath: "inset(0 0 0 0 round 1px 0 0 1px)" }}
-                          />
-                          {/* Líneas de contenido */}
-                          <rect x="12" y="22" width="28" height="2.2" rx="1.1" fill="#c0c0c0" />
-                          <rect x="12" y="34" width="18" height="2" rx="1" fill="#3b82f6" opacity="0.8" />
-                          <rect x="12" y="48" width="30" height="1.8" rx="0.9" fill="#d0d0d0" />
-                          <rect x="12" y="52.5" width="22" height="1.8" rx="0.9" fill="#d8d8d8" />
-                          <rect x="12" y="57" width="26" height="1.8" rx="0.9" fill="#d0d0d0" />
-                          {/* Borde del cuerpo */}
-                          <path
-                            d="M8 2H34L50 18V64C50 65.1 49.1 66 48 66H8C6.9 66 6 65.1 6 64V4C6 2.9 6.9 2 8 2Z"
-                            stroke="#d4d4d4"
-                            strokeWidth="1"
-                            fill="none"
-                          />
-                        </svg>
+                        <div style={{ width:36, height:36, borderRadius:8, background:bg, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                          <span style={{ fontSize:9, fontWeight:800, color:'#fff', letterSpacing:'0.05em' }}>{ext.toUpperCase().slice(0,4)||'FILE'}</span>
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-[13px] font-medium text-neutral-200 truncate group-hover:text-white transition-colors">{f.name}</div>
+                          {f.note && <div className="text-[11px] text-neutral-500 truncate">{f.note}</div>}
+                        </div>
                       </button>
-                    </td>
-
-                    <td className="px-4 py-3 text-neutral-200 max-w-[160px]">
-                      <div className="font-medium truncate">{f.name}</div>
-                      {f.note && <div className="text-[11px] text-neutral-500 truncate">{f.note}</div>}
+                        );
+                      })()}
                     </td>
 
                     {/* Usuario que subió */}
@@ -189,11 +154,9 @@ export function FileTable({
                         return <span className={`df-badge df-file-${known ? ext : 'default'}`}>{ext.toUpperCase() || 'FILE'}</span>;
                       })()}
                     </td>
-                    <td className="px-4 py-3 text-neutral-400">{prettyBytes(f.size)}</td>
-
                     <td className="px-4 py-3">
                       <span className="inline-flex items-center gap-2">
-                        <span className="px-2 py-0.5 rounded-lg bg-neutral-800">
+                        <span className="px-2 py-0.5 rounded-lg bg-neutral-800 text-xs">
                           v{f.version}
                         </span>
                       </span>

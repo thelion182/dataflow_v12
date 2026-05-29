@@ -1797,15 +1797,6 @@ return (
           {isDark ? "Modo Día" : "Modo Noche"}
         </button>
 
-        {/* Perfil usuario */}
-        <button
-          onClick={() => setProfileOpen(true)}
-          className="df-nav-item"
-          title="Ver mi perfil"
-        >
-          <Avatar src={me?.avatarDataUrl || undefined} name={meDisplay} size={16} />
-          <span className="truncate text-xs">{meDisplay}</span>
-        </button>
       </div>
     </aside>
 

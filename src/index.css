@@ -132,7 +132,6 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
 .df-sidebar {
   width: var(--df-sidebar-width);
   background-color: var(--df-bg-sidebar);
-  border-right: 1px solid var(--df-border-subtle);
   position: fixed;
   top: 0; left: 0;
   height: 100vh;
@@ -142,7 +141,6 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
 }
 .df-sidebar-logo {
   padding: 18px 16px 14px;
-  border-bottom: 1px solid var(--df-border-subtle);
   display: flex; align-items: center; gap: 10px;
 }
 .df-sidebar-logo-text {
@@ -189,7 +187,6 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
 .df-nav-item.active .df-nav-icon { opacity: 1; }
 .df-sidebar-footer {
   padding: 10px 8px;
-  border-top: 1px solid var(--df-border-subtle);
   display: flex; flex-direction: column; gap: 2px;
 }
 
@@ -197,7 +194,6 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
 .df-topbar {
   height: var(--df-topbar-height);
   background-color: var(--df-bg-topbar);
-  border-bottom: 1px solid var(--df-border-subtle);
   display: flex; align-items: center;
   padding: 0 24px; gap: 10px;
   position: sticky; top: 0; z-index: 30;
@@ -236,13 +232,13 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
 /* ── KPI Cards ──────────────────────────────────────────── */
 .df-kpi-card {
   background-color: var(--df-bg-surface);
-  border: 1px solid var(--df-border-subtle);
   border-radius: var(--df-radius-lg);
   padding: 16px;
   position: relative; overflow: hidden;
   transition: all var(--df-transition);
+  box-shadow: var(--df-shadow-card);
 }
-.df-kpi-card:hover { border-color: var(--df-border-default); box-shadow: var(--df-shadow-card); }
+.df-kpi-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.3); transform: translateY(-1px); }
 .df-kpi-icon {
   width: 42px; height: 42px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
@@ -280,8 +276,7 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
 .df-sidebar-help {
   margin: 0 8px 10px;
   padding: 12px 14px;
-  background: rgba(99,102,241,0.08);
-  border: 1px solid rgba(99,102,241,0.18);
+  background: rgba(99,102,241,0.06);
   border-radius: 10px;
 }
 .df-sidebar-help-title {
