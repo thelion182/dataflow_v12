@@ -54,7 +54,7 @@ export function FormularioReclamo({ config, emisorId, emisorNombre, onGuardar, o
     tipoReclamo: config.tiposReclamo[0] || '',
     descripcion: '',
   });
-  const [notificarEmail, setNotificarEmail] = useState(true);
+  const [notificarEmail, setNotificarEmail] = useState(false);
   const [adjuntos, setAdjuntos] = useState<Adjunto[]>([]);
   const [error, setError] = useState('');
   const [hayBorrador] = useState(!!initialForm);

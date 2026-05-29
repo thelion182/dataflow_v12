@@ -7,10 +7,20 @@ interface ObsRow {
   id: string;
   nro?: string;
   nombre?: string;
+  cargo?: string;
+  accion?: string;
   duda?: string;
   nota?: string;
+  answerText?: string;
   sector?: string;
   cc?: string;
+  codigo?: string;
+  codDesc?: string;
+  dhc?: string;
+  actividad?: string;
+  modCampo?: string;
+  modDe?: string;
+  modA?: string;
   answered?: boolean;
   processed?: boolean;
   _tipo?: string;   // 'duda' | 'arreglo'
@@ -25,6 +35,32 @@ interface Props {
   meNombre: string;
   onProcess: (rows: { fileId: string; threadId: string; rowId: string }[], byId: string, byName: string) => Promise<void>;
   onClose: () => void;
+}
+
+function arregloNarrativa(r: ObsRow): string {
+  const accion = r.accion || '';
+  const partes: string[] = [];
+  if (accion === 'alta') {
+    partes.push('Alta al código');
+    if (r.codigo) partes.push(`"${r.codigo}"`);
+    if (r.codDesc) partes.push(`"${r.codDesc}"`);
+    if (r.dhc) partes.push(`${r.dhc} días/horas/cantidad`);
+    if (r.actividad) partes.push(`a la actividad "${r.actividad}"`);
+  } else if (accion === 'modificar') {
+    partes.push(`Modificar el ${r.modCampo || 'campo'}`);
+    if (r.modDe) partes.push(`de "${r.modDe}"`);
+    if (r.modA) partes.push(`a "${r.modA}"`);
+    if (r.actividad) partes.push(`a la actividad "${r.actividad}"`);
+  } else if (accion === 'baja') {
+    partes.push('Baja del código');
+    if (r.codigo) partes.push(`"${r.codigo}"`);
+    if (r.codDesc) partes.push(`"${r.codDesc}"`);
+    if (r.dhc) partes.push(`${r.dhc} días/horas/cantidad`);
+    if (r.actividad) partes.push(`a la actividad "${r.actividad}"`);
+  }
+  if (r.cc) partes.push(`CC ${r.cc}`);
+  if (r.nota) partes.push(`— ${r.nota}`);
+  return partes.length > 0 ? partes.join(', ') : (r.nota || '—');
 }
 
 export function ProcesarDudasModal({ files, meId, meNombre, onProcess, onClose }: Props) {
@@ -44,11 +80,11 @@ export function ProcesarDudasModal({ files, meId, meNombre, onProcess, onClose }
       const obs = file.observations || [];
       for (const thread of obs) {
         if (thread.deleted) continue;
-        const tipo = thread.tipo || 'duda';
+        const tipo = thread.tipo === 'arreglo' ? 'arreglo' : 'duda';
         for (const row of (thread.rows || [])) {
           // Dudas: solo mostrar si están respondidas por RRHH y aún no procesadas
           // Arreglos: mostrar si aún no están procesados (answered no aplica igual)
-          if (tipo === 'duda' && (!row.answered || row.processed)) continue;
+          if (tipo !== 'arreglo' && (!row.answered || row.processed)) continue;
           if (tipo === 'arreglo' && row.processed) continue;
           rows.push({
             ...row,
@@ -186,7 +222,7 @@ export function ProcesarDudasModal({ files, meId, meNombre, onProcess, onClose }
   return createPortal(
     <div className="fixed inset-0 z-[200] flex items-center justify-center">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-2xl bg-neutral-900 border border-neutral-700 rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+      <div className="relative z-10 w-full max-w-5xl bg-neutral-900 border border-neutral-700 rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
           <div>
@@ -260,8 +296,10 @@ export function ProcesarDudasModal({ files, meId, meNombre, onProcess, onClose }
                   </th>
                   <th className="py-2 pr-3 text-left">Nº</th>
                   <th className="py-2 pr-3 text-left">Nombre</th>
+                  <th className="py-2 pr-3 text-left">Cargo</th>
                   <th className="py-2 pr-3 text-left">Sector / CC</th>
-                  <th className="py-2 pr-3 text-left">Duda / Nota</th>
+                  <th className="py-2 pr-3 text-left">Duda / Detalle arreglo</th>
+                  <th className="py-2 pr-3 text-left">Respuesta RRHH</th>
                   <th className="py-2 pr-3 text-left">Archivo</th>
                   <th className="py-2 text-left">Tipo</th>
                 </tr>
@@ -286,10 +324,19 @@ export function ProcesarDudasModal({ files, meId, meNombre, onProcess, onClose }
                       />
                     </td>
                     <td className="py-2 pr-3 font-mono text-neutral-300">{r.nro || '—'}</td>
-                    <td className="py-2 pr-3 text-neutral-200 max-w-[120px] truncate">{r.nombre || '—'}</td>
-                    <td className="py-2 pr-3 text-neutral-400 max-w-[100px] truncate">{r.sector || r.cc || '—'}</td>
-                    <td className="py-2 pr-3 text-neutral-300 max-w-[160px] truncate">{r.duda || r.nota || '—'}</td>
-                    <td className="py-2 pr-3 text-neutral-500 max-w-[100px] truncate" title={r._fileName}>{r._fileName}</td>
+                    <td className="py-2 pr-3 text-neutral-200 max-w-[110px] truncate">{r.nombre || '—'}</td>
+                    <td className="py-2 pr-3 text-neutral-400 max-w-[90px] truncate">{r.cargo || '—'}</td>
+                    <td className="py-2 pr-3 text-neutral-400 max-w-[90px] truncate">{r.sector || r.cc || '—'}</td>
+                    <td className="py-2 pr-3 max-w-[220px]">
+                      {r._tipo === 'arreglo' ? (() => {
+                        const txt = arregloNarrativa(r);
+                        return <span className="text-neutral-300 text-[11px] leading-snug" title={txt}>{txt}</span>;
+                      })() : (
+                        <span className="text-neutral-300 text-xs" title={r.duda}>{r.duda || '—'}</span>
+                      )}
+                    </td>
+                    <td className="py-2 pr-3 text-emerald-400/80 max-w-[140px] truncate" title={r._tipo === 'arreglo' ? undefined : r.answerText}>{r._tipo === 'arreglo' ? '—' : (r.answerText || '—')}</td>
+                    <td className="py-2 pr-3 text-neutral-500 max-w-[90px] truncate" title={r._fileName}>{r._fileName}</td>
                     <td className="py-2">
                       <span className={cls('px-1.5 py-0.5 rounded text-[10px]',
                         r._tipo === 'arreglo' ? 'bg-purple-500/20 text-purple-300' : 'bg-blue-500/20 text-blue-300'

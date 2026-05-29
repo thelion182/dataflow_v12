@@ -1123,10 +1123,8 @@ const [helpOpen, setHelpOpen] = useState(false);
     const r = db.periods.getAll();
     if (r && typeof (r as any).then === 'function') {
       (r as any).then((arr: any) => {
-        if (Array.isArray(arr) && arr.length > 0) {
-          periodsLoadedRef.current = true;
-          setPeriods(arr);
-        }
+        periodsLoadedRef.current = true;
+        if (Array.isArray(arr)) setPeriods(arr);
       }).catch(() => {});
     }
     const rs = db.periods.getSelected();
@@ -2083,7 +2081,15 @@ return (
       )}
 
       {/* ===== Panel de Información (existente) ===== */}
-      {modoActivo === "informacion" && (<div key="panel-informacion" className="modo-panel space-y-6"><>
+      {modoActivo === "informacion" && (<div key="panel-informacion" className="modo-panel space-y-6 relative min-h-[400px]"><>
+      {/* Bloqueo total para rrhh/sueldos sin liquidación seleccionada */}
+      {(meRole === 'rrhh' || meRole === 'sueldos') && !selectedPeriodId && (
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-neutral-950/90 backdrop-blur-sm rounded-2xl">
+          <div className="text-5xl mb-4">📅</div>
+          <h2 className="text-lg font-semibold text-neutral-300 mb-2">Seleccioná una liquidación</h2>
+          <p className="text-sm text-neutral-500 max-w-xs">Elegí una liquidación arriba para acceder a los archivos y acciones.</p>
+        </div>
+      )}
       {/* Uploader / mensajes por rol */}
       {myPerms.actions.bumpVersion ? (
         <div className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-4 relative">

@@ -6,6 +6,7 @@ import { formatDate } from "../../lib/time";
 import { typeBadge, userNameOr } from "../shared/uiHelpers";
 export function DetailModal({ detailOpen, setDetailOpen, selectedFile, setSelected, setSelectedThreadId, selectedThreadId, periodNameById, prettyBytes, formatDate, userNameOr, meRole, me, setNote, openReplyDialog, addRowToThread, addRowInputs, setAddRowInputs, blankAddRow, markObservationProcessed, deleteThread, adjustReplyInputs, setAdjustReplyInputs, answerAdjust, answerAdjustThread, replyInputs, setReplyInputs, answerObservation }: any) {
   const [expandedArreglos, setExpandedArreglos] = useState<Set<string>>(new Set());
+  const [lightboxSrc, setLightboxSrc] = useState('');
   function toggleArreglo(id: string) {
     setExpandedArreglos(prev => {
       const next = new Set(prev);
@@ -373,7 +374,7 @@ export function DetailModal({ detailOpen, setDetailOpen, selectedFile, setSelect
                                         <td className="px-2 py-2 align-top text-neutral-200 whitespace-pre-wrap">
                                           {r.duda}
                                           {r.imageDataUrl && (
-                                            <img src={r.imageDataUrl} alt="adjunto" className="mt-2 max-w-[200px] max-h-[150px] rounded-lg border border-neutral-700 cursor-pointer" onClick={() => window.open(r.imageDataUrl, '_blank')} />
+                                            <img src={r.imageDataUrl} alt="adjunto" className="mt-2 max-w-[200px] max-h-[150px] rounded-lg border border-neutral-700 cursor-pointer" onClick={() => setLightboxSrc(r.imageDataUrl)} />
                                           )}
                                         </td>
                                         <td className="px-2 py-2 align-top text-neutral-200">{r.sector}</td>
@@ -516,6 +517,23 @@ export function DetailModal({ detailOpen, setDetailOpen, selectedFile, setSelect
               </div>
             </div>
           </div>
+        </div>
+      )}
+      {lightboxSrc && (
+        <div
+          className="fixed inset-0 z-[99999] bg-black/90 flex items-center justify-center p-4 cursor-zoom-out"
+          onClick={() => setLightboxSrc('')}
+        >
+          <img
+            src={lightboxSrc}
+            alt="Vista ampliada"
+            className="max-w-full max-h-full rounded-xl object-contain"
+            onClick={e => e.stopPropagation()}
+          />
+          <button
+            className="absolute top-4 right-4 text-white text-2xl bg-black/50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-black/80"
+            onClick={() => setLightboxSrc('')}
+          >✕</button>
         </div>
       )}
     </>

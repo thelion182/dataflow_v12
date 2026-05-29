@@ -312,6 +312,54 @@ export function TablaReclamosView({
           <div className="flex-1" />
           <button
             type="button"
+            onClick={() => {
+              const toPrint = visible.filter(r => seleccionados.has(r.id) && r.estado !== 'Liquidado' && r.estado !== 'Eliminado');
+              if (toPrint.length === 0) {
+                alert('No hay reclamos para imprimir (todos ya están liquidados o eliminados).');
+                return;
+              }
+              const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Reclamos</title><style>
+                *{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;color:#111}
+                .page{padding:28px 36px;page-break-after:always}.page:last-child{page-break-after:auto}
+                h1{font-size:20px;font-weight:700;margin-bottom:2px}h2{font-size:12px;color:#666;margin-bottom:14px}
+                .ticket{font-size:17px;font-weight:700;color:#1a56db;margin-bottom:6px}
+                .badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#dcfce7;color:#166534;margin-bottom:14px}
+                table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px}
+                td{padding:4px 8px;vertical-align:top;border-bottom:1px solid #eee}td:first-child{width:160px;font-weight:600;color:#555}
+                .desc{padding:10px 12px;background:#f8f9fa;border-left:3px solid #bbb;font-size:12px;line-height:1.5}
+                .footer{margin-top:14px;font-size:10px;color:#999;border-top:1px solid #ddd;padding-top:8px}
+                @media print{.page{border:none}}
+              </style></head><body>
+              ${toPrint.map(r => `<div class="page">
+                <h1>Círculo Católico</h1><h2>RECLAMO DE HABERES</h2>
+                <div class="ticket">${r.ticket || ''}</div>
+                <span class="badge">${r.estado}</span>
+                <table>
+                  <tr><td>Funcionario</td><td>${r.nroFuncionario ? '#' + r.nroFuncionario + ' ' : ''}${r.nombreFuncionario || '—'}</td></tr>
+                  <tr><td>Cargo</td><td>${r.cargo || '—'}</td></tr>
+                  <tr><td>Centro de Costo</td><td>${r.centroCosto || '—'}</td></tr>
+                  <tr><td>Liquidación</td><td>${r.liquidacion || '—'}${r.paraLiquidacion ? ' → ' + r.paraLiquidacion : ''}</td></tr>
+                  <tr><td>Causal</td><td>${r.causal || '—'}</td></tr>
+                  <tr><td>Tipo</td><td>${r.tipoReclamo || '—'}</td></tr>
+                  <tr><td>Emitido por</td><td>${r.emisorNombre || '—'} — ${r.fechaEmision ? new Date(r.fechaEmision).toLocaleDateString('es-UY') : '—'}</td></tr>
+                </table>
+                <div class="desc"><strong>Descripción:</strong><br>${(r.descripcion || '—').replace(/\n/g, '<br>')}</div>
+                <div class="footer">Impreso el ${new Date().toLocaleString('es-UY')}</div>
+              </div>`).join('')}
+              <script>window.onload=function(){window.print()}</script></body></html>`;
+              const win = window.open('', '_blank', 'width=820,height=700');
+              if (win) { win.document.write(html); win.document.close(); }
+              const ids = toPrint.map(r => r.id);
+              onCambiarEstadoLote(ids, 'Liquidado', '');
+              setSeleccionados(new Set());
+            }}
+            style={{ padding: '5px 14px' }}
+            className="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-sm text-white font-medium transition-colors"
+          >
+            Liquidar e imprimir ({visible.filter(r => seleccionados.has(r.id) && r.estado !== 'Liquidado' && r.estado !== 'Eliminado').length})
+          </button>
+          <button
+            type="button"
             onClick={() => setLoteOpen(true)}
             style={{ padding: '5px 14px' }}
             className="rounded-xl bg-blue-600 hover:bg-blue-500 text-sm text-white font-medium transition-colors"

@@ -389,11 +389,18 @@ export function SectorsConfigModal({
                         </td>
                         <td className="px-3 py-2">
                           {isAdmin ? (
-                            <input
+                            <select
                               className="w-full rounded-lg bg-neutral-800 border border-neutral-700 px-2 py-1 text-xs text-neutral-100"
                               value={c.sectorName}
                               onChange={(e) => updateCombination(c.id, { sectorName: e.target.value })}
-                            />
+                            >
+                              {c.sectorName && !(sectors||[]).some((s:any)=>s.name===c.sectorName) && (
+                                <option value={c.sectorName}>{c.sectorName} (sin sector)</option>
+                              )}
+                              {(sectors||[]).map((s:any) => (
+                                <option key={s.id} value={s.name}>{s.name}</option>
+                              ))}
+                            </select>
                           ) : (
                             <span className="text-neutral-200">{c.sectorName}</span>
                           )}
@@ -491,12 +498,16 @@ export function SectorsConfigModal({
                         <option key={s.code} value={s.code}>{s.code} — {s.name}</option>
                       ))}
                     </select>
-                    <input
-                      className="flex-1 min-w-32 rounded-xl bg-neutral-800 border border-neutral-700 px-3 py-1.5 text-xs text-neutral-100 placeholder:text-neutral-600"
-                      placeholder="Sector *"
+                    <select
+                      className="flex-1 min-w-32 rounded-xl bg-neutral-800 border border-neutral-700 px-3 py-1.5 text-xs text-neutral-100"
                       value={newCombo.sectorName}
                       onChange={(e) => setNewCombo(v => ({ ...v, sectorName: e.target.value }))}
-                    />
+                    >
+                      <option value="">Sector *</option>
+                      {(sectors||[]).map((s:any) => (
+                        <option key={s.id} value={s.name}>{s.name}</option>
+                      ))}
+                    </select>
                     <input
                       className="flex-1 min-w-28 rounded-xl bg-neutral-800 border border-neutral-700 px-3 py-1.5 text-xs text-neutral-400 placeholder:text-neutral-700"
                       placeholder="Subcategoría (vacío si no aplica)"

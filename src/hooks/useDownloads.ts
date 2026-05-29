@@ -83,7 +83,7 @@ export function useDownloads({ files, setFiles, me, meRole, myPerms, selectedPer
 
   function getNextNumberForUserInPeriod(user: any, periodId: string): number | null {
     // Solo aplica a rol "sueldos"
-    if (user?.role !== "sueldos") return null;
+    if (!['sueldos', 'admin', 'superadmin'].includes(user?.role)) return null;
     if (user?.rangeStart == null || user?.rangeEnd == null) return null;
 
     const countersForPeriod = downloadCounters[periodId] || {};
@@ -266,7 +266,7 @@ export function useDownloads({ files, setFiles, me, meRole, myPerms, selectedPer
     let finalDownloadName = fOriginal.name || "archivo.txt";
   
     // Si el usuario que descarga es de Sueldos → asignar numeración propia
-    if (meRole === "sueldos") {
+    if (meRole === "sueldos" || meRole === "admin" || meRole === "superadmin") {
       let freshMe = getUserById(me.id);
       if (USE_API) {
         try {

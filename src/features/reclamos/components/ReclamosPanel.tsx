@@ -332,7 +332,12 @@ export function ReclamosPanel({ meRole, meId, meNombre }: Props) {
           reclamo={reclamos.find(r => r.id === detalleReclamo.id) || detalleReclamo}
           meId={meId}
           meNombre={meNombre}
+          meRole={meRole}
           onAgregarNota={(reclamoId, nota) => { agregarNotaInterna(reclamoId, nota); }}
+          onCambiarEstado={(reclamoId, nuevoEstado, nota) => {
+            const r = reclamos.find(x => x.id === reclamoId) || detalleReclamo;
+            if (r) handleCambiarEstado(r, nuevoEstado, nota || '');
+          }}
           onClose={() => setDetalleReclamo(null)}
         />
       )}

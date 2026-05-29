@@ -8,7 +8,9 @@ interface Props {
   reclamo: Reclamo;
   meId: string;
   meNombre: string;
+  meRole?: string;
   onAgregarNota: (reclamoId: string, nota: NotaInterna) => void;
+  onCambiarEstado?: (reclamoId: string, nuevoEstado: string, nota?: string) => void;
   onClose: () => void;
 }
 
@@ -56,10 +58,26 @@ function iconoMime(tipo: string): string {
   return '📎';
 }
 
-export function DetalleReclamo({ reclamo, meId, meNombre, onAgregarNota, onClose }: Props) {
+export function DetalleReclamo({ reclamo, meId, meNombre, meRole, onAgregarNota, onCambiarEstado, onClose }: Props) {
   const [notifExpandida, setNotifExpandida] = useState<number | null>(null);
   const [nuevaNota, setNuevaNota] = useState('');
   const [guardandoNota, setGuardandoNota] = useState(false);
+  const [imprimiendo, setImprimiendo] = useState(false);
+
+  const puedeImprimir = meRole === 'sueldos' || meRole === 'admin' || meRole === 'superadmin';
+
+  async function handleImprimirReclamo() {
+    if (imprimiendo) return;
+    setImprimiendo(true);
+    try {
+      if (reclamo.estado !== 'Liquidado' && onCambiarEstado) {
+        await onCambiarEstado(reclamo.id, 'Liquidado', '');
+      }
+      setTimeout(() => window.print(), 300);
+    } finally {
+      setImprimiendo(false);
+    }
+  }
 
   function handleGuardarNota() {
     const texto = nuevaNota.trim();
@@ -130,20 +148,31 @@ export function DetalleReclamo({ reclamo, meId, meNombre, onAgregarNota, onClose
               <h3 className="text-sm font-semibold text-neutral-400 uppercase tracking-wide mb-3">
                 Adjuntos <span className="text-neutral-600 font-normal normal-case tracking-normal text-xs">({adjuntos.length})</span>
               </h3>
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 {adjuntos.map(a => (
-                  <div key={a.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-neutral-800 bg-neutral-800/40">
-                    <span className="text-lg shrink-0">{iconoMime(a.tipo)}</span>
-                    <span className="flex-1 text-sm text-neutral-200 truncate min-w-0">{a.nombre}</span>
-                    <span className="text-xs text-neutral-500 shrink-0">{formatBytes(a.tamaño)}</span>
-                    <a
-                      href={a.datos}
-                      download={a.nombre}
-                      style={{ padding: '4px 10px' }}
-                      className="rounded-lg bg-neutral-700 hover:bg-neutral-600 text-xs text-neutral-200 transition-colors shrink-0"
-                    >
-                      Descargar
-                    </a>
+                  <div key={a.id} className="rounded-xl border border-neutral-800 bg-neutral-800/40 overflow-hidden">
+                    <div className="flex items-center gap-3 px-3 py-2.5">
+                      <span className="text-lg shrink-0">{iconoMime(a.tipo)}</span>
+                      <span className="flex-1 text-sm text-neutral-200 truncate min-w-0">{a.nombre}</span>
+                      <span className="text-xs text-neutral-500 shrink-0">{formatBytes(a.tamaño)}</span>
+                      <a
+                        href={a.datos}
+                        download={a.nombre}
+                        style={{ padding: '4px 10px' }}
+                        className="rounded-lg bg-neutral-700 hover:bg-neutral-600 text-xs text-neutral-200 transition-colors shrink-0"
+                      >
+                        Descargar
+                      </a>
+                    </div>
+                    {a.tipo && a.tipo.startsWith('image/') && a.datos && (
+                      <div className="px-3 pb-3">
+                        <img
+                          src={a.datos}
+                          alt={a.nombre}
+                          className="max-w-full max-h-64 rounded-lg object-contain border border-neutral-700"
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -249,7 +278,20 @@ export function DetalleReclamo({ reclamo, meId, meNombre, onAgregarNota, onClose
           )}
         </div>
 
-        <div className="px-6 py-4 border-t border-neutral-800 flex justify-end">
+        <div className="px-6 py-4 border-t border-neutral-800 flex items-center justify-between gap-3">
+          <div>
+            {puedeImprimir && reclamo.estado !== 'Eliminado' && (
+              <button
+                type="button"
+                onClick={handleImprimirReclamo}
+                disabled={imprimiendo}
+                style={{ padding: '8px 16px' }}
+                className="rounded-xl bg-green-700 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm text-white font-medium flex items-center gap-2"
+              >
+                🖨️ {reclamo.estado === 'Liquidado' ? 'Imprimir' : 'Liquidar e imprimir'}
+              </button>
+            )}
+          </div>
           <button type="button" onClick={onClose} style={{ padding: '8px 16px' }} className="rounded-xl bg-neutral-800 hover:bg-neutral-700 text-sm text-neutral-200">
             Cerrar
           </button>

@@ -165,6 +165,19 @@ Ver `BACKEND_GUIDE.md` — guía completa con pasos, SQL, endpoints, LDAP, nginx
 3. `cp .env.example .env.local` → editar `VITE_USE_API=true` y `VITE_API_URL=http://servidor/api`
 4. `npm run dev` — el switch es automático, sin tocar ningún otro archivo
 
+## Fixes aplicados desde v11 (2026-05-28)
+- `DataFlowDemo.tsx`: periodsLoadedRef siempre true en API mode (Fix A); overlay "sin liquidación" para rrhh/sueldos (Fix B)
+- `useDownloads.ts`: getNextNumberForUserInPeriod y doDownload aplican a admin/superadmin además de sueldos
+- `ProcesarDudasModal.tsx`: reemplazado con versión v11 (tabla expandida con Cargo, Duda/Detalle, Respuesta RRHH; arregloNarrativa)
+- `DetailModal.tsx`: lightbox state + onClick imagen a setLightboxSrc + overlay lightbox con z-[99999]
+- `TablaReclamosView.tsx`: botón "Liquidar e imprimir" con HTML de impresión por página antes de "Cambiar estado en lote"
+- `UserAdminModal.tsx`: rango de descarga visible para admin y superadmin además de sueldos
+- `SectorsConfigModal.tsx`: campo sectorName en tabla de combinaciones y en formulario "Nueva combinación" cambiado de input libre a select con sectores existentes
+- `FormularioReclamo.tsx`: notificarEmail inicia en false
+- `DetalleReclamo.tsx`: props meRole + onCambiarEstado; estado imprimiendo; puedeImprimir; handleImprimirReclamo; preview inline de imágenes en adjuntos; botón "Liquidar e imprimir" / "Imprimir" en footer
+- `ReclamosPanel.tsx`: pasa meRole y onCambiarEstado a DetalleReclamo
+- `backend/src/routes/periods.js`: PUT / cambiado de requireRole('admin','superadmin') a requireAuth + isAdminLike con guards para locked y delete
+
 ## Deuda técnica conocida
 - `DataFlowDemo.tsx` tiene ~2.800 líneas y 40+ estados — funciona pero difícil de mantener
 - TypeScript `strict: false` — intencional para velocidad de desarrollo

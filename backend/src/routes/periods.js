@@ -29,17 +29,21 @@ router.get('/', requireAuth, async (req, res) => {
 });
 
 // ── PUT /api/periods  (sincronización completa desde frontend) ──────────────
-// Solo admin y superadmin pueden modificar períodos.
-// El campo locked solo puede cambiarse por admin o superadmin.
-router.put('/', requireRole('admin', 'superadmin'), async (req, res) => {
+// Admin y superadmin pueden crear, actualizar y eliminar períodos.
+// Sueldos y rrhh pueden crear/actualizar períodos si tienen el permiso habilitado,
+// pero NO pueden eliminar períodos existentes.
+router.put('/', requireAuth, async (req, res) => {
   const periods = req.body;
   if (!Array.isArray(periods)) return res.status(400).json({ error: 'Body debe ser un array' });
+
+  const isAdminLike = ['admin', 'superadmin'].includes(req.session.role);
 
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
 
     for (const p of periods) {
+      // Solo admin/superadmin pueden cambiar el campo locked
       await client.query(
         `INSERT INTO periods (id, name, year, month, upload_from, upload_to, locked)
          VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -47,20 +51,22 @@ router.put('/', requireRole('admin', 'superadmin'), async (req, res) => {
            name        = EXCLUDED.name,
            upload_from = EXCLUDED.upload_from,
            upload_to   = EXCLUDED.upload_to,
-           locked      = EXCLUDED.locked`,
-        [p.id, p.name, p.year, p.month, p.uploadFrom || null, p.uploadTo || null, !!p.locked]
+           locked      = CASE WHEN $8 THEN EXCLUDED.locked ELSE periods.locked END`,
+        [p.id, p.name, p.year, p.month, p.uploadFrom || null, p.uploadTo || null, !!p.locked, isAdminLike]
       );
     }
 
-    // Eliminar los que ya no están en la lista (solo si no tienen archivos)
-    const ids = periods.map((p) => p.id);
-    if (ids.length > 0) {
-      await client.query(
-        `DELETE FROM periods
-         WHERE id NOT IN (SELECT unnest($1::uuid[]))
-           AND id NOT IN (SELECT DISTINCT period_id FROM files WHERE period_id IS NOT NULL)`,
-        [ids]
-      );
+    // Solo admin/superadmin pueden eliminar períodos
+    if (isAdminLike) {
+      const ids = periods.map((p) => p.id);
+      if (ids.length > 0) {
+        await client.query(
+          `DELETE FROM periods
+           WHERE id NOT IN (SELECT unnest($1::uuid[]))
+             AND id NOT IN (SELECT DISTINCT period_id FROM files WHERE period_id IS NOT NULL)`,
+          [ids]
+        );
+      }
     }
 
     await client.query('COMMIT');

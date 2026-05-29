@@ -262,7 +262,7 @@ export function UserAdminModal({
                             <option value="admin">Administrador</option>
                             {isSuperAdmin && <option value="superadmin">Super Admin</option>}
                           </select>
-                          {u.role === "sueldos" && (
+                          {(u.role === "sueldos" || u.role === "admin" || u.role === "superadmin") && (
                             <div className="mt-2 text-[11px] text-neutral-400 space-y-2">
                               <div className="flex flex-wrap items-center gap-1">
                                 <span>Rango:</span>
