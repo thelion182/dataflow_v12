@@ -1719,7 +1719,7 @@ return (
     <aside className="df-sidebar">
       {/* Logo */}
       <div className="df-sidebar-logo">
-        <Logo className="animate-slowspin" style={{ height: '40px', width: '40px', flexShrink: 0 }} />
+        <Logo className="h-8 w-auto animate-slowspin" />
         <span className="df-sidebar-logo-text">Dataflow</span>
       </div>
 

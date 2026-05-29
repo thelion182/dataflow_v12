@@ -144,7 +144,7 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
   display: flex; align-items: center; justify-content: center; gap: 10px;
 }
 .df-sidebar-logo-text {
-  font-size: 17px; font-weight: 700; letter-spacing: -0.03em;
+  font-size: 16px; font-weight: 700; letter-spacing: -0.03em;
   color: var(--df-text-primary);
 }
 .df-nav {
