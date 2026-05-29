@@ -1641,7 +1641,7 @@ return (
   <div
     className="min-h-screen text-neutral-100 overflow-x-hidden"
     style={{
-      backgroundColor: isDark ? '#0f1115' : '#f5f7fa',
+      backgroundColor: isDark ? '#0c1018' : '#f5f7fa',
       paddingLeft: 'var(--df-sidebar-width)',
     }}
   >
@@ -1659,12 +1659,9 @@ return (
 
       {/* Navegación principal */}
       <nav className="df-nav">
+
         {/* Información */}
-        <button
-          onClick={() => toggleModo("informacion")}
-          className={`df-nav-item ${modoActivo === 'informacion' ? 'active' : ''}`}
-          title="Módulo Información — archivos de liquidación"
-        >
+        <button onClick={() => toggleModo("informacion")} className={`df-nav-item ${modoActivo === 'informacion' ? 'active' : ''}`} title="Módulo Información — archivos de liquidación">
           <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
             <rect x="2" y="2" width="12" height="12" rx="1.5"/>
             <path d="M5 5.5h6M5 8h4M5 10.5h5"/>
@@ -1672,74 +1669,155 @@ return (
           Información
         </button>
 
-        {/* Reclamos */}
+        {/* Gestión — collapsible */}
         <button
-          onClick={() => toggleModo("reclamos")}
-          className={`df-nav-item ${modoActivo === 'reclamos' ? 'active' : ''}`}
-          title="Módulo Reclamos de haberes"
+          onClick={(e) => { e.stopPropagation(); setMenuOpen(m => m === 'gestion' ? null : 'gestion'); }}
+          className={`df-nav-item ${menuOpen === 'gestion' ? 'active' : ''}`}
+          title="Gestión de liquidaciones, sectores y más"
         >
+          <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <circle cx="8" cy="8" r="2.5"/>
+            <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.1 3.1l1.4 1.4M11.5 11.5l1.4 1.4M3.1 12.9l1.4-1.4M11.5 4.5l1.4-1.4"/>
+          </svg>
+          Gestión
+          <svg className="df-nav-chevron ml-auto" style={{ transform: menuOpen === 'gestion' ? 'rotate(180deg)' : 'none', transition: 'transform 150ms' }} viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M2 4l4 4 4-4"/>
+          </svg>
+        </button>
+        {menuOpen === 'gestion' && (
+          <div className="df-nav-sub-group">
+            {myPerms.actions.createPeriod && (
+              <button onClick={() => { setMenuOpen(null); setAddPeriodOpen(true); setNewPeriodYM(""); }} className="df-nav-sub-item" title="Crear nueva liquidación">
+                ➕ Nueva liquidación
+              </button>
+            )}
+            {isAdminOrSuper && (
+              <button onClick={() => { setMenuOpen(null); setManagePeriodsOpen(true); }} className="df-nav-sub-item" title="Gestionar liquidaciones">
+                🗓️ Gestionar liquidaciones
+              </button>
+            )}
+            {isAdminOrSuper && (
+              <button onClick={() => { setMenuOpen(null); setSectorsOpen(true); }} className="df-nav-sub-item" title="Gestionar sectores y sedes">
+                🏷️ Sectores & Sedes
+              </button>
+            )}
+            <button onClick={() => { setMenuOpen(null); setSectorSummaryOpen(true); setSectorSummarySelectedKey(null); }} className="df-nav-sub-item" title="Ver archivos agrupados por sector">
+              📊 Vista por sector
+            </button>
+            <button
+              onClick={() => {
+                setMenuOpen(null);
+                const all = filtered.map((f: any) => f.id);
+                if (all.length === 0) { alert("No hay archivos visibles para re-detectar."); return; }
+                let changed = 0;
+                setFiles((prev: any[]) => prev.map((f: any) => {
+                  if (!all.includes(f.id)) return f;
+                  const gs = guessSiteForFileName(f.name || "");
+                  const gsc = guessSectorForFileName(f.name || "");
+                  const updated = (gs?.id ?? null) !== f.siteId || (gsc?.id ?? null) !== f.sectorId;
+                  if (updated) changed++;
+                  return { ...f, siteId: gs?.id ?? f.siteId ?? null, siteName: gs?.name ?? f.siteName ?? null, sectorId: gsc?.id ?? f.sectorId ?? null, sectorName: gsc?.name ?? f.sectorName ?? null };
+                }));
+                setTimeout(() => pushToast({ title: "Re-detección OK", message: `${changed} archivo(s) actualizados en la vista actual.` }), 100);
+              }}
+              className="df-nav-sub-item"
+              title="Re-detecta sector y sede para los archivos visibles"
+            >
+              🔄 Re-detectar sector/sede
+            </button>
+            {isSuperAdmin && (
+              <button onClick={() => { setMenuOpen(null); setDashboardOpen(true); }} className="df-nav-sub-item">
+                📈 Dashboard SA
+              </button>
+            )}
+            {isSuperAdmin && (
+              <button
+                onClick={() => {
+                  setMenuOpen(null);
+                  try {
+                    const data: Record<string, any> = {};
+                    for (let i = 0; i < localStorage.length; i++) {
+                      const key = localStorage.key(i);
+                      if (key) {
+                        try { data[key] = JSON.parse(localStorage.getItem(key) || "null"); }
+                        catch { data[key] = localStorage.getItem(key); }
+                      }
+                    }
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `dataflow-backup-${new Date().toISOString().slice(0, 10)}.json`;
+                    document.body.appendChild(a); a.click(); a.remove();
+                    URL.revokeObjectURL(url);
+                  } catch (e) { alert("Error al exportar: " + e); }
+                }}
+                className="df-nav-sub-item"
+              >
+                💾 Backup completo
+              </button>
+            )}
+            {isSuperAdmin && selectedPeriodId && (
+              <button
+                onClick={() => { setMenuOpen(null); setResetPeriodOpen(true); setResetPeriodPass(""); setResetPeriodError(""); }}
+                className="df-nav-sub-item danger"
+                title="Eliminar todos los archivos de la liquidación actual"
+              >
+                🔥 Reset liquidación
+              </button>
+            )}
+            {import.meta.env.VITE_USE_API !== 'true' && (
+              <button onClick={() => { setMenuOpen(null); clearAll(); }} className="df-nav-sub-item" title="Reiniciar datos de la demo">
+                🔄 Reset demo
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Reportes — collapsible */}
+        {myPerms.actions.exportCSV && (
+          <>
+            <button
+              onClick={(e) => { e.stopPropagation(); setMenuOpen(m => m === 'reportes' ? null : 'reportes'); }}
+              className={`df-nav-item ${menuOpen === 'reportes' ? 'active' : ''}`}
+              title="Exportar reportes CSV"
+            >
+              <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M2 12l3-3 2 2 3-4 3 3"/>
+                <rect x="1" y="1" width="14" height="14" rx="1.5"/>
+              </svg>
+              Reportes
+              <svg className="df-nav-chevron ml-auto" style={{ transform: menuOpen === 'reportes' ? 'rotate(180deg)' : 'none', transition: 'transform 150ms' }} viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 4l4 4 4-4"/>
+              </svg>
+            </button>
+            {menuOpen === 'reportes' && (
+              <div className="df-nav-sub-group">
+                <button onClick={() => { setMenuOpen(null); exportCSV(); }} className="df-nav-sub-item" title="Exportar inventario general de archivos">
+                  📊 Exportar CSV (archivos)
+                </button>
+                <button onClick={() => { setMenuOpen(null); exportDownloadsCSV(); }} className="df-nav-sub-item" title="Exportar descargas numeradas por usuario">
+                  📥 Exportar CSV (descargas)
+                </button>
+                <button onClick={() => { setMenuOpen(null); setExportRespOpen(true); }} className="df-nav-sub-item" title="Exportar dudas respondidas por rango">
+                  📝 Reporte dudas respondidas
+                </button>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Reclamos */}
+        <button onClick={() => toggleModo("reclamos")} className={`df-nav-item ${modoActivo === 'reclamos' ? 'active' : ''}`} title="Módulo Reclamos de haberes">
           <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M14 2H2a1 1 0 00-1 1v7a1 1 0 001 1h3l3 3 3-3h3a1 1 0 001-1V3a1 1 0 00-1-1z"/>
           </svg>
           Reclamos
         </button>
 
-        <div className="df-nav-label">Gestión</div>
-
-        {/* Sectores & Sedes */}
-        {(isAdminOrSuper) && (
-          <button
-            onClick={() => setSectorsOpen(true)}
-            className="df-nav-item"
-            title="Gestionar sectores y sedes"
-          >
-            <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-              <rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/>
-              <rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/>
-            </svg>
-            Sectores & Sedes
-          </button>
-        )}
-
-        {/* Liquidaciones */}
-        {isAdminOrSuper && (
-          <button
-            onClick={() => setManagePeriodsOpen(true)}
-            className="df-nav-item"
-            title="Gestionar liquidaciones"
-          >
-            <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-              <rect x="1" y="3" width="14" height="11" rx="1.5"/>
-              <path d="M5 3V1M11 3V1M1 7h14"/>
-            </svg>
-            Liquidaciones
-          </button>
-        )}
-
-        {/* Reportes */}
-        {myPerms.actions.exportCSV && (
-          <button
-            onClick={() => { setMenuOpen(m => m === "reportes" ? null : "reportes"); }}
-            className={`df-nav-item ${menuOpen === 'reportes' ? 'active' : ''}`}
-            title="Exportar reportes CSV"
-          >
-            <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-              <path d="M2 12l3-3 2 2 3-4 3 3"/>
-              <rect x="1" y="1" width="14" height="14" rx="1.5"/>
-            </svg>
-            Reportes
-          </button>
-        )}
-
-        <div className="df-nav-label">Administración</div>
-
         {/* Usuarios */}
         {myPerms?.actions?.manageUsers && (
-          <button
-            onClick={() => setUsersOpen(true)}
-            className="df-nav-item"
-            title="Gestionar usuarios y permisos"
-          >
+          <button onClick={() => setUsersOpen(true)} className="df-nav-item" title="Gestionar usuarios y permisos">
             <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
               <circle cx="5.5" cy="4.5" r="2"/><path d="M1 14c0-2.5 2-4.5 4.5-4.5S10 11.5 10 14"/>
               <circle cx="12" cy="4" r="1.5"/><path d="M14.5 13c0-2-1.3-3.5-2.9-4"/>
@@ -1748,20 +1826,6 @@ return (
           </button>
         )}
 
-        {/* Dashboard SA */}
-        {isSuperAdmin && (
-          <button
-            onClick={() => setDashboardOpen(true)}
-            className="df-nav-item"
-            title="Dashboard superadmin — auditoría"
-          >
-            <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-              <rect x="1" y="9" width="4" height="6" rx="0.5"/><rect x="6" y="5" width="4" height="10" rx="0.5"/>
-              <rect x="11" y="1" width="4" height="14" rx="0.5"/>
-            </svg>
-            Dashboard SA
-          </button>
-        )}
       </nav>
 
       {/* Help card */}
@@ -1811,10 +1875,10 @@ return (
           {/* LEFT — saludo */}
           <div className="flex items-center gap-3 min-w-0">
             <div className="min-w-0">
-              <h2 className="text-sm font-semibold leading-tight" style={{ color: 'var(--df-text-primary)' }}>
-                ¡Hola, {meDisplay}! <span style={{ fontSize: '16px' }}>👋</span>
+              <h2 className="font-semibold leading-tight" style={{ color: 'var(--df-text-primary)', fontSize: '15px' }}>
+                ¡Hola, {meDisplay}! <span style={{ fontSize: '15px' }}>👋</span>
               </h2>
-              <p className="text-xs truncate" style={{ color: 'var(--df-text-muted)' }}>
+              <p className="truncate" style={{ color: 'var(--df-text-muted)', fontSize: '11px' }}>
                 {showFirstPeriodHint
                   ? <span className="text-amber-400 animate-pulse">Seleccioná una liquidación para comenzar</span>
                   : 'Gestión de archivos entre RRHH (Información) y Sueldos'}
@@ -1849,7 +1913,7 @@ return (
                 type="button"
                 onClick={() => { setDoubtMode("con"); setDoubtValue(""); }}
                 className={cls(
-                  "hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-medium transition-colors",
+                  "hidden md:flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[11px] font-medium transition-colors",
                   summaryCurrentPeriod.totalPend > 0
                     ? "border-amber-500/40 bg-amber-500/10 text-amber-300"
                     : "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
@@ -1862,169 +1926,7 @@ return (
               </button>
             )}
 
-            {/* ===== Menú: Gestión ===== */}
-            <div className="relative">
-              <button
-                onClick={(e) => { e.stopPropagation(); setMenuOpen((m) => (m === "gestion" ? null : "gestion")); }}
-                className={MENU_TRIGGER}
-                aria-haspopup="menu"
-                aria-expanded={menuOpen === "gestion"}
-                title="Opciones de gestión"
-              >
-                Gestión ▾
-              </button>
-              {menuOpen === "gestion" && (
-                <div role="menu" className="absolute right-0 mt-2 w-72 rounded-xl border border-neutral-800 bg-neutral-900 shadow-2xl p-2 z-20">
-                  <div className="px-2 py-1 text-[11px] uppercase tracking-wide text-neutral-500">Liquidaciones</div>
-
-                  {myPerms.actions.createPeriod && (
-                    <button onClick={() => { setMenuOpen(null); setAddPeriodOpen(true); setNewPeriodYM(""); }} className={MENU_ITEM} title="Crear nueva liquidación (mes/año)">
-                      ➕ Nueva liquidación
-                    </button>
-                  )}
-                  {isAdminOrSuper && (
-                    <button onClick={() => { setMenuOpen(null); setManagePeriodsOpen(true); }} className={MENU_ITEM} title="Gestionar liquidaciones">
-                      🗓️ Gestionar liquidaciones
-                    </button>
-                  )}
-                  {isSuperAdmin && (
-                    <button onClick={() => { setMenuOpen(null); setDashboardOpen(true); }} className={MENU_ITEM}>
-                      📊 Dashboard SA
-                    </button>
-                  )}
-                  {isSuperAdmin && (
-                    <button
-                      onClick={() => {
-                        setMenuOpen(null);
-                        try {
-                          const data: Record<string, any> = {};
-                          for (let i = 0; i < localStorage.length; i++) {
-                            const key = localStorage.key(i);
-                            if (key) {
-                              try { data[key] = JSON.parse(localStorage.getItem(key) || "null"); }
-                              catch { data[key] = localStorage.getItem(key); }
-                            }
-                          }
-                          const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-                          const url = URL.createObjectURL(blob);
-                          const a = document.createElement("a");
-                          a.href = url;
-                          a.download = `dataflow-backup-${new Date().toISOString().slice(0, 10)}.json`;
-                          document.body.appendChild(a); a.click(); a.remove();
-                          URL.revokeObjectURL(url);
-                        } catch (e) { alert("Error al exportar: " + e); }
-                      }}
-                      className={MENU_ITEM}
-                    >
-                      💾 Backup completo
-                    </button>
-                  )}
-                  {isSuperAdmin && selectedPeriodId && (
-                    <button
-                      onClick={() => { setMenuOpen(null); setResetPeriodOpen(true); setResetPeriodPass(""); setResetPeriodError(""); }}
-                      className={`${MENU_ITEM} text-rose-300`}
-                      title="Eliminar todos los archivos de la liquidación actual (requiere contraseña)"
-                    >
-                      🔥 Reset liquidación
-                    </button>
-                  )}
-
-                  <div className="px-2 pt-3 pb-1 text-[11px] uppercase tracking-wide text-neutral-500">Sectores</div>
-                  <button onClick={() => { setMenuOpen(null); setSectorsOpen(true); }} className={MENU_ITEM} title="Gestionar reglas Sector + Sede">
-                    🏷️ Sectores & Sedes
-                  </button>
-
-                  <div className="px-2 pt-3 pb-1 text-[11px] uppercase tracking-wide text-neutral-500">Resumen</div>
-                  <button onClick={() => { setMenuOpen(null); setSectorSummaryOpen(true); setSectorSummarySelectedKey(null); }} className={MENU_ITEM} title="Ver archivos agrupados por sector">
-                    📊 Vista por sector
-                  </button>
-                  <button
-                    onClick={() => {
-                      setMenuOpen(null);
-                      const all = filtered.map((f: any) => f.id);
-                      if (all.length === 0) { alert("No hay archivos visibles para re-detectar."); return; }
-                      let changed = 0;
-                      setFiles((prev: any[]) => prev.map((f: any) => {
-                        if (!all.includes(f.id)) return f;
-                        const gs = guessSiteForFileName(f.name || "");
-                        const gsc = guessSectorForFileName(f.name || "");
-                        const updated = (gs?.id ?? null) !== f.siteId || (gsc?.id ?? null) !== f.sectorId;
-                        if (updated) changed++;
-                        return { ...f, siteId: gs?.id ?? f.siteId ?? null, siteName: gs?.name ?? f.siteName ?? null, sectorId: gsc?.id ?? f.sectorId ?? null, sectorName: gsc?.name ?? f.sectorName ?? null };
-                      }));
-                      setTimeout(() => pushToast({ title: "Re-detección OK", message: `${changed} archivo(s) actualizados en la vista actual.` }), 100);
-                    }}
-                    className={MENU_ITEM}
-                    title="Re-detecta sector y sede para todos los archivos de la vista actual"
-                  >
-                    🔄 Re-detectar sector/sede
-                  </button>
-
-                  <div className="px-2 pt-3 pb-1 text-[11px] uppercase tracking-wide text-neutral-500">Avanzado</div>
-                  {import.meta.env.VITE_USE_API !== 'true' && (
-                    <button onClick={() => { setMenuOpen(null); clearAll(); }} className={MENU_ITEM} title="Reiniciar datos de la demo (localStorage)">
-                      🔄 Reset demo
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* ===== Menú: Reportes ===== */}
-            {myPerms.actions.exportCSV && (
-              <div className="relative">
-                <button
-                  onClick={(e) => { e.stopPropagation(); setMenuOpen((m) => (m === "reportes" ? null : "reportes")); }}
-                  className={MENU_TRIGGER}
-                  aria-haspopup="menu"
-                  aria-expanded={menuOpen === "reportes"}
-                  title="Exportar reportes"
-                >
-                  Reportes ▾
-                </button>
-                {menuOpen === "reportes" && (
-                  <div role="menu" className="absolute right-0 mt-2 w-80 rounded-xl border border-neutral-800 bg-neutral-900 shadow-2xl p-2 z-20">
-
-                  <div className="px-2 py-1 text-[11px] uppercase tracking-wide text-neutral-500">
-                    Exportar
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      setMenuOpen(null);
-                      exportCSV();
-                    }}
-                    className={MENU_ITEM}
-                    title="Exportar inventario general de archivos (1 fila por archivo)"
-                  >
-                    📊 Exportar CSV (archivos)
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setMenuOpen(null);
-                      exportDownloadsCSV();
-                    }}
-                    className={MENU_ITEM}
-                    title="Exportar descargas numeradas por usuario (1 fila por descarga)"
-                  >
-                    📥 Exportar CSV (descargas)
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setMenuOpen(null);
-                      setExportRespOpen(true);
-                    }}
-                    className={MENU_ITEM}
-                    title="Exportar dudas respondidas por rango de funcionario"
-                  >
-                    📝 Reporte dudas respondidas (CSV)
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+            {/* Gestión y Reportes están en el sidebar */}
 
             {/* Campana de notificaciones */}
             <NotificationBell />
@@ -2039,8 +1941,8 @@ return (
                 title={meUsername}
               >
                 <Avatar src={me?.avatarDataUrl || undefined} name={meDisplay} size={20} />
-                <span className="hidden sm:inline text-neutral-200">{meDisplay}</span>
-                <span className="hidden md:inline px-2 py-0.5 rounded-lg text-[11px] bg-neutral-800 text-neutral-300">
+                <span className="hidden sm:inline text-[12px] text-neutral-200">{meDisplay}</span>
+                <span className="hidden md:inline px-2 py-0.5 rounded-lg text-[10px] bg-neutral-800 text-neutral-400">
                   {ROLE_LABELS[meRole] || meRole}
                 </span>
                 ▾
@@ -2223,7 +2125,7 @@ return (
             <div className="df-kpi-card">
               <div className="flex items-start gap-2">
                 <div className="df-kpi-icon df-kpi-icon-indigo">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
                     <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/>
                     <polyline points="13 2 13 9 20 9"/>
                     <line x1="9" y1="13" x2="15" y2="13"/>
@@ -2245,7 +2147,7 @@ return (
             >
               <div className="flex items-start gap-2">
                 <div className="df-kpi-icon df-kpi-icon-amber">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"/>
                     <line x1="12" y1="8" x2="12" y2="12"/>
                     <line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -2269,7 +2171,7 @@ return (
             >
               <div className="flex items-start gap-2">
                 <div className="df-kpi-icon df-kpi-icon-blue">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="8" y1="6" x2="21" y2="6"/>
                     <line x1="8" y1="12" x2="21" y2="12"/>
                     <line x1="8" y1="18" x2="21" y2="18"/>
@@ -2293,7 +2195,7 @@ return (
             >
               <div className="flex items-start gap-2">
                 <div className="df-kpi-icon df-kpi-icon-emerald">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
                   </svg>
                 </div>
@@ -2308,7 +2210,7 @@ return (
             <div className="df-kpi-card">
               <div className="flex items-start gap-2">
                 <div className="df-kpi-icon df-kpi-icon-violet">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"/>
                     <polyline points="12 6 12 12 16 14"/>
                   </svg>
