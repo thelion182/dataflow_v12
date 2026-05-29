@@ -165,6 +165,11 @@ Ver `BACKEND_GUIDE.md` — guía completa con pasos, SQL, endpoints, LDAP, nginx
 3. `cp .env.example .env.local` → editar `VITE_USE_API=true` y `VITE_API_URL=http://servidor/api`
 4. `npm run dev` — el switch es automático, sin tocar ningún otro archivo
 
+## Cambios en v12 — ajustes UI/UX adicionales (2026-05-29)
+- `src/index.css`: logo sidebar más grande (padding 22px 16px 18px, text 17px); nav gap 3px, item padding 9px 12px, font 14px; KPI cards padding 18px 14px; upload zone padding 30px; dropzone glows reposicionados a esquinas inferiores (`radial-gradient ellipse at 0% 100%` y `100% 100%`); modo-panel padding 20px
+- `src/app/DataFlowDemo.tsx`: logo 50×50px; paginación configurable (`tablePageSize` + `tableExpanded` states con localStorage); KPI cards layout vertical centrado (`flex-col items-center text-center`); props `tablePageSize/updateTablePageSize/tableExpanded/setTableExpanded` pasados a FileTable
+- `src/features/files/FileTable.tsx`: footer paginación expandido — admin/superadmin ven select de rows/pág (3,5,6,10,20) y toggle "Ver todo" (modo sin paginación); Sueldos default 6/pág; preferencia persiste en localStorage
+
 ## Cambios en v12 — rediseño integral UI/UX (2026-05-29)
 - `src/index.css`: paleta carbon completa (`--df-bg-page: #0d1526`, sidebar `#121d31`, surface `#121c2f`); light mode gris (`#e8ecf2` base); dropzone gradiente oscuro con glows indigo/azul; `.df-nav-sub-group` y `.df-nav-sub-item` para colapsables del sidebar; MENU_TRIGGER sin borde normal (hover-only)
 - `src/app/DataFlowDemo.tsx`: fondo unificado `#0d1526` (topbar = página); sidebar con items Gestión (colapsable) y Reportes (colapsable) absorbiendo todos los items que antes estaban en el topbar; topbar limpio sin dropdowns; paginación `FILE_PAGE_SIZE=3` + `filePage` + `pagedFiltered`; sección Ayuda (`modoActivo="ayuda"`) con renderer markdown simple, edición solo para superadmin, persistido en `localStorage('dataflow-help-content')`; logo más grande (`h-9`); KPI cards más grandes; nav font 13.5px

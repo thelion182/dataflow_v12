@@ -114,6 +114,7 @@ export function FileTable({
   rowMenuOpen, setRowMenuOpen, rowMenuAnchor, setRowMenuAnchor,
   MENU_TRIGGER, MENU_ITEM, me, usersSnap,
   filePage, setFilePage, totalPages, totalFiles,
+  tablePageSize, updateTablePageSize, tableExpanded, setTableExpanded,
 }: any) {
   const userById = React.useMemo(() => {
     const m = {};
@@ -377,49 +378,81 @@ export function FileTable({
         </table>
       </div>
 
-      {/* Paginación */}
-      {totalPages > 1 && (
-        <div className="px-4 py-3 border-t border-neutral-800 flex items-center justify-between bg-neutral-900/30 rounded-b-2xl">
+      {/* Paginación + config */}
+      {(totalPages > 1 || (isAdmin || isSuperAdmin)) && (
+        <div className="px-4 py-3 border-t border-neutral-800 flex items-center justify-between gap-3 bg-neutral-900/30 rounded-b-2xl flex-wrap">
           <span className="text-xs text-neutral-500">
-            Página {filePage + 1} de {totalPages} · {totalFiles} archivo{totalFiles !== 1 ? 's' : ''}
+            {tableExpanded
+              ? `${totalFiles} archivo${totalFiles !== 1 ? 's' : ''} · Vista completa`
+              : `Página ${filePage + 1} de ${totalPages} · ${totalFiles} archivo${totalFiles !== 1 ? 's' : ''}`}
           </span>
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => setFilePage(p => Math.max(0, p - 1))}
-              disabled={filePage === 0}
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-              title="Página anterior"
-            >
-              <svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M8 2L4 6l4 4"/>
-              </svg>
-            </button>
-
-            {Array.from({ length: totalPages }, (_, i) => i).map(i => (
-              <button
-                key={i}
-                onClick={() => setFilePage(i)}
-                className={cls(
-                  "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-all",
-                  i === filePage
-                    ? "bg-indigo-600/80 text-white"
-                    : "text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200"
+          <div className="flex items-center gap-3">
+            {(isAdmin || isSuperAdmin) && (
+              <div className="flex items-center gap-2">
+                <label className="flex items-center gap-1.5 cursor-pointer select-none text-xs text-neutral-400">
+                  <input
+                    type="checkbox"
+                    checked={tableExpanded}
+                    onChange={(e) => {
+                      setTableExpanded(e.target.checked);
+                      if (!e.target.checked) setFilePage(0);
+                    }}
+                    className="w-3 h-3 accent-indigo-500"
+                  />
+                  Ver todo
+                </label>
+                {!tableExpanded && (
+                  <select
+                    value={tablePageSize}
+                    onChange={(e) => updateTablePageSize(parseInt(e.target.value, 10))}
+                    className="bg-neutral-800 border border-neutral-700 rounded px-1.5 py-0.5 text-xs text-neutral-300 cursor-pointer"
+                    title="Archivos por página"
+                  >
+                    {[3, 5, 6, 10, 20].map(n => (
+                      <option key={n} value={n}>{n} / pág.</option>
+                    ))}
+                  </select>
                 )}
-              >
-                {i + 1}
-              </button>
-            ))}
-
-            <button
-              onClick={() => setFilePage(p => Math.min(totalPages - 1, p + 1))}
-              disabled={filePage >= totalPages - 1}
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-              title="Página siguiente"
-            >
-              <svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 2l4 4-4 4"/>
-              </svg>
-            </button>
+              </div>
+            )}
+            {!tableExpanded && totalPages > 1 && (
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setFilePage(p => Math.max(0, p - 1))}
+                  disabled={filePage === 0}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  title="Página anterior"
+                >
+                  <svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M8 2L4 6l4 4"/>
+                  </svg>
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i).map(i => (
+                  <button
+                    key={i}
+                    onClick={() => setFilePage(i)}
+                    className={cls(
+                      "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-all",
+                      i === filePage
+                        ? "bg-indigo-600/80 text-white"
+                        : "text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200"
+                    )}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setFilePage(p => Math.min(totalPages - 1, p + 1))}
+                  disabled={filePage >= totalPages - 1}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  title="Página siguiente"
+                >
+                  <svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 2l4 4-4 4"/>
+                  </svg>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

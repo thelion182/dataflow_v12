@@ -345,9 +345,23 @@ function toggleModo(modo: "informacion" | "reclamos" | "ayuda") {
   try { localStorage.setItem("dataflow_modo_activo", modo); } catch {}
 }
 
-// ===== Paginación de tabla de archivos =====
-const FILE_PAGE_SIZE = 3;
+// ===== Paginación de tabla de archivos (configurable por rol) =====
 const [filePage, setFilePage] = useState(0);
+const [tablePageSize, setTablePageSize] = useState(() => {
+  try {
+    const saved = localStorage.getItem('dataflow-table-page-size');
+    if (saved) return Math.max(1, parseInt(saved, 10) || 5);
+    const session = JSON.parse(localStorage.getItem('fileflow-session') || 'null');
+    return session?.role === 'sueldos' ? 6 : 5;
+  } catch { return 5; }
+});
+const [tableExpanded, setTableExpanded] = useState(false);
+
+function updateTablePageSize(n: number) {
+  setTablePageSize(n);
+  setFilePage(0);
+  try { localStorage.setItem('dataflow-table-page-size', String(n)); } catch {}
+}
 
 // ===== Contenido de Ayuda (editable por superadmin) =====
 const DEFAULT_HELP =
@@ -609,11 +623,11 @@ const [sectorViewOnlyPending, setSectorViewOnlyPending] = useState(false); // so
 useEffect(() => { setFilePage(0); }, [q, statusFilter, uploaderFilter, selectedPeriodId, doubtMode, doubtValue]);
 
 // Slice paginado
-const pagedFiltered = useMemo(() =>
-  filtered.slice(filePage * FILE_PAGE_SIZE, (filePage + 1) * FILE_PAGE_SIZE),
-  [filtered, filePage]
-);
-const totalPages = Math.max(1, Math.ceil(filtered.length / FILE_PAGE_SIZE));
+const pagedFiltered = useMemo(() => {
+  if (tableExpanded) return filtered;
+  return filtered.slice(filePage * tablePageSize, (filePage + 1) * tablePageSize);
+}, [filtered, filePage, tablePageSize, tableExpanded]);
+const totalPages = tableExpanded ? 1 : Math.max(1, Math.ceil(filtered.length / tablePageSize));
 
 // ===============================
 // Helpers: clave sector|sede (ÚNICOS)
@@ -1705,7 +1719,7 @@ return (
     <aside className="df-sidebar">
       {/* Logo */}
       <div className="df-sidebar-logo">
-        <Logo className="h-9 animate-slowspin" style={{ minWidth: 36 }} />
+        <Logo className="animate-slowspin" style={{ height: '50px', width: '50px', flexShrink: 0 }} />
         <span className="df-sidebar-logo-text">Dataflow</span>
       </div>
 
@@ -2248,7 +2262,7 @@ return (
 
             {/* Total archivos — indigo */}
             <div className="df-kpi-card">
-              <div className="flex items-start gap-2">
+              <div className="flex flex-col items-center text-center gap-2">
                 <div className="df-kpi-icon df-kpi-icon-indigo">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
                     <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/>
@@ -2257,9 +2271,9 @@ return (
                     <line x1="9" y1="17" x2="13" y2="17"/>
                   </svg>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="df-kpi-label">Archivos</div>
+                <div>
                   <div className="df-kpi-value">{summaryCurrentPeriod.totalFiles}</div>
+                  <div className="df-kpi-label mt-1">Archivos</div>
                 </div>
               </div>
             </div>
@@ -2270,7 +2284,7 @@ return (
               title="Click para filtrar archivos con dudas pendientes"
               onClick={() => setDoubtMode(v => v === "con" ? "all" : "con")}
             >
-              <div className="flex items-start gap-2">
+              <div className="flex flex-col items-center text-center gap-2">
                 <div className="df-kpi-icon df-kpi-icon-amber">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"/>
@@ -2278,11 +2292,11 @@ return (
                     <line x1="12" y1="16" x2="12.01" y2="16"/>
                   </svg>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="df-kpi-label">Dudas pend.</div>
+                <div>
                   <div className="df-kpi-value">{summaryCurrentPeriod.dudasPend}</div>
+                  <div className="df-kpi-label mt-1">Dudas pend.</div>
                   {summaryCurrentPeriod.dudasPend > 0 && (
-                    <div className="df-kpi-delta warn">activas</div>
+                    <div className="df-kpi-delta warn" style={{ justifyContent: 'center', marginTop: '2px' }}>activas</div>
                   )}
                 </div>
               </div>
@@ -2294,7 +2308,7 @@ return (
               title="Dudas respondidas por RRHH que Sueldos aún no procesó. Click para filtrar."
               onClick={() => setDoubtMode(v => v === "resp_no_proc" ? "all" : "resp_no_proc")}
             >
-              <div className="flex items-start gap-2">
+              <div className="flex flex-col items-center text-center gap-2">
                 <div className="df-kpi-icon df-kpi-icon-blue">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="8" y1="6" x2="21" y2="6"/>
@@ -2305,9 +2319,9 @@ return (
                     <line x1="3" y1="18" x2="3.01" y2="18"/>
                   </svg>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="df-kpi-label">Sin procesar</div>
+                <div>
                   <div className="df-kpi-value">{summaryCurrentPeriod.respNoProc}</div>
+                  <div className="df-kpi-label mt-1">Sin procesar</div>
                 </div>
               </div>
             </div>
@@ -2318,35 +2332,35 @@ return (
               title="Click para filtrar archivos con arreglos pendientes"
               onClick={() => setDoubtMode(v => v === "arreglo_pend" ? "all" : "arreglo_pend")}
             >
-              <div className="flex items-start gap-2">
+              <div className="flex flex-col items-center text-center gap-2">
                 <div className="df-kpi-icon df-kpi-icon-emerald">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
                   </svg>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="df-kpi-label">Arreglos pend.</div>
+                <div>
                   <div className="df-kpi-value">{summaryCurrentPeriod.arreglosPend}</div>
+                  <div className="df-kpi-label mt-1">Arreglos pend.</div>
                 </div>
               </div>
             </div>
 
             {/* Última actualización — violet */}
             <div className="df-kpi-card">
-              <div className="flex items-start gap-2">
+              <div className="flex flex-col items-center text-center gap-2">
                 <div className="df-kpi-icon df-kpi-icon-violet">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"/>
                     <polyline points="12 6 12 12 16 14"/>
                   </svg>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="df-kpi-label">Última actualiz.</div>
+                <div>
                   <div className="text-[13px] font-semibold" style={{ color: 'var(--df-text-primary)' }}>
                     {summaryCurrentPeriod.lastUpdated
                       ? formatDate(summaryCurrentPeriod.lastUpdated)
                       : "—"}
                   </div>
+                  <div className="df-kpi-label mt-1">Última actualiz.</div>
                 </div>
               </div>
             </div>
@@ -2619,6 +2633,8 @@ return (
         usersSnap={usersSnap}
         filePage={filePage} setFilePage={setFilePage}
         totalPages={totalPages} totalFiles={filtered.length}
+        tablePageSize={tablePageSize} updateTablePageSize={updateTablePageSize}
+        tableExpanded={tableExpanded} setTableExpanded={setTableExpanded}
       />
 
 
