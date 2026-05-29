@@ -2126,27 +2126,27 @@ return (
             {/* Ícono cloud upload */}
             <div className="df-upload-icon-wrap">
               {isDraggingOver ? (
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
                 </svg>
               ) : (
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="16 16 12 12 8 16"/>
                   <line x1="12" y1="12" x2="12" y2="21"/>
                   <path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/>
                 </svg>
               )}
             </div>
-            <div className="text-sm font-semibold mb-1" style={{ color: 'var(--df-text-primary)' }}>
+            <div className="text-[13px] font-semibold mb-0.5" style={{ color: 'var(--df-text-primary)' }}>
               {isDraggingOver ? 'Soltá para subir' : 'Arrastrá y soltá archivos'}
             </div>
-            <div className="text-xs mb-3" style={{ color: 'var(--df-text-muted)' }}>CSV, TXT, Excel, ODS</div>
+            <div className="text-[11px] mb-2" style={{ color: 'var(--df-text-muted)' }}>CSV, TXT, Excel, ODS</div>
             <span className={cls("df-upload-btn", !selectedPeriodId && "opacity-50 cursor-not-allowed")}>
               Seleccionar archivos
             </span>
             {selectedPeriodId && (
-              <div className="text-[11px] mt-4" style={{ color: 'var(--df-text-muted)' }}>
-                Liquidación actual: <span className="font-medium" style={{ color: 'var(--df-text-secondary)' }}>{periodNameById[selectedPeriodId]}</span>
+              <div className="text-[11px] mt-2" style={{ color: 'var(--df-text-muted)' }}>
+                Liquidación: <span className="font-medium" style={{ color: 'var(--df-text-secondary)' }}>{periodNameById[selectedPeriodId]}</span>
               </div>
             )}
           </label>
@@ -2178,36 +2178,32 @@ return (
           return `${d}/${m}/${y}`;
         };
         return (
-          <div className="rounded-2xl border border-neutral-800 bg-neutral-900/40 px-4 py-3">
-            <div className="flex items-center justify-between gap-2 mb-1.5">
-              <span className="text-xs text-neutral-500 shrink-0">
+          <div className="px-1 py-2">
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <span className="text-[11px] text-neutral-600 shrink-0">
                 {uploadFrom ? (
-                  <>Desde <span className="text-neutral-300 font-medium">{fmtDate(uploadFrom)}</span></>
-                ) : (
-                  <span className="text-neutral-600">Sin fecha inicio</span>
-                )}
+                  <>Desde <span className="text-neutral-400">{fmtDate(uploadFrom)}</span></>
+                ) : null}
               </span>
               <span
                 className={cls(
-                  "text-xs font-semibold",
-                  deliveryProgress.allDone ? "text-green-400" : "text-amber-400"
+                  "text-[11px] font-medium",
+                  deliveryProgress.allDone ? "text-green-500" : "text-neutral-500"
                 )}
               >
                 {deliveryProgress.done}/{deliveryProgress.total} sectores · {deliveryProgress.pct}%
               </span>
-              <span className="text-xs text-neutral-500 shrink-0">
+              <span className="text-[11px] text-neutral-600 shrink-0">
                 {uploadTo ? (
-                  <>Hasta <span className="text-neutral-300 font-medium">{fmtDate(uploadTo)}</span></>
-                ) : (
-                  <span className="text-neutral-600">Sin fecha límite</span>
-                )}
+                  <>Hasta <span className="text-neutral-400">{fmtDate(uploadTo)}</span></>
+                ) : null}
               </span>
             </div>
-            <div className="h-2 w-full rounded-full bg-neutral-800 overflow-hidden">
+            <div className="h-1 w-full rounded-full bg-neutral-800/80 overflow-hidden">
               <div
                 className={cls(
                   "h-full rounded-full transition-all duration-500",
-                  deliveryProgress.allDone ? "bg-green-500" : "bg-amber-500"
+                  deliveryProgress.allDone ? "bg-green-600/70" : "bg-neutral-600"
                 )}
                 style={{ width: `${deliveryProgress.pct}%` }}
               />
@@ -2217,25 +2213,17 @@ return (
       })()}
 
       {/* Filtros */}
-      <div className="sticky z-10 rounded-2xl border border-neutral-800 bg-neutral-900 p-3" style={{ top: 'var(--df-topbar-height)' }}>
-        <div className="flex items-center gap-2 mb-3 md:mb-4">
-          <span className="text-xs text-neutral-400">
-            Liquidación:{" "}
-            <span className="text-neutral-200 font-medium">
-              {periodNameById[selectedPeriodId] || "—"}
-            </span>
-          </span>
-        </div>
+      <div className="sticky z-10" style={{ top: 'var(--df-topbar-height)' }}>
 
         {/* KPI cards */}
         {selectedPeriodId && (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-3">
 
             {/* Total archivos — indigo */}
             <div className="df-kpi-card">
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-2">
                 <div className="df-kpi-icon df-kpi-icon-indigo">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
                     <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/>
                     <polyline points="13 2 13 9 20 9"/>
                     <line x1="9" y1="13" x2="15" y2="13"/>
@@ -2243,7 +2231,7 @@ return (
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="df-kpi-label">Archivos en esta liquidación</div>
+                  <div className="df-kpi-label">Archivos</div>
                   <div className="df-kpi-value">{summaryCurrentPeriod.totalFiles}</div>
                 </div>
               </div>
@@ -2255,19 +2243,19 @@ return (
               title="Click para filtrar archivos con dudas pendientes"
               onClick={() => setDoubtMode(v => v === "con" ? "all" : "con")}
             >
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-2">
                 <div className="df-kpi-icon df-kpi-icon-amber">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"/>
                     <line x1="12" y1="8" x2="12" y2="12"/>
                     <line x1="12" y1="16" x2="12.01" y2="16"/>
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="df-kpi-label">Dudas pendientes</div>
+                  <div className="df-kpi-label">Dudas pend.</div>
                   <div className="df-kpi-value">{summaryCurrentPeriod.dudasPend}</div>
                   {summaryCurrentPeriod.dudasPend > 0 && (
-                    <div className="df-kpi-delta warn">+{summaryCurrentPeriod.dudasPend} activas</div>
+                    <div className="df-kpi-delta warn">activas</div>
                   )}
                 </div>
               </div>
@@ -2279,9 +2267,9 @@ return (
               title="Dudas respondidas por RRHH que Sueldos aún no procesó. Click para filtrar."
               onClick={() => setDoubtMode(v => v === "resp_no_proc" ? "all" : "resp_no_proc")}
             >
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-2">
                 <div className="df-kpi-icon df-kpi-icon-blue">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="8" y1="6" x2="21" y2="6"/>
                     <line x1="8" y1="12" x2="21" y2="12"/>
                     <line x1="8" y1="18" x2="21" y2="18"/>
@@ -2291,11 +2279,8 @@ return (
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="df-kpi-label">Respondidas sin procesar</div>
+                  <div className="df-kpi-label">Sin procesar</div>
                   <div className="df-kpi-value">{summaryCurrentPeriod.respNoProc}</div>
-                  {summaryCurrentPeriod.respNoProc > 0 && (
-                    <div className="df-kpi-delta warn">-1 desde ayer</div>
-                  )}
                 </div>
               </div>
             </div>
@@ -2306,34 +2291,31 @@ return (
               title="Click para filtrar archivos con arreglos pendientes"
               onClick={() => setDoubtMode(v => v === "arreglo_pend" ? "all" : "arreglo_pend")}
             >
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-2">
                 <div className="df-kpi-icon df-kpi-icon-emerald">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="df-kpi-label">Arreglos pendientes</div>
+                  <div className="df-kpi-label">Arreglos pend.</div>
                   <div className="df-kpi-value">{summaryCurrentPeriod.arreglosPend}</div>
-                  {summaryCurrentPeriod.arreglosPend > 0 && (
-                    <div className="df-kpi-delta warn">-2 desde ayer</div>
-                  )}
                 </div>
               </div>
             </div>
 
             {/* Última actualización — violet */}
             <div className="df-kpi-card">
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-2">
                 <div className="df-kpi-icon df-kpi-icon-violet">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"/>
                     <polyline points="12 6 12 12 16 14"/>
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="df-kpi-label">Última actualización</div>
-                  <div className="text-sm font-semibold" style={{ color: 'var(--df-text-primary)' }}>
+                  <div className="df-kpi-label">Última actualiz.</div>
+                  <div className="text-[13px] font-semibold" style={{ color: 'var(--df-text-primary)' }}>
                     {summaryCurrentPeriod.lastUpdated
                       ? formatDate(summaryCurrentPeriod.lastUpdated)
                       : "—"}

@@ -38,8 +38,8 @@
   --df-accent-glow:    rgba(99,102,241,0.15);
 
   /* Sidebar */
-  --df-sidebar-width:  220px;
-  --df-topbar-height:  64px;
+  --df-sidebar-width:  210px;
+  --df-topbar-height:  54px;
 
   /* Sombras */
   --df-shadow-card:    0 1px 2px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.25);
@@ -140,28 +140,28 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
   z-index: 40;
 }
 .df-sidebar-logo {
-  padding: 18px 16px 14px;
-  display: flex; align-items: center; gap: 10px;
+  padding: 14px 14px 10px;
+  display: flex; align-items: center; gap: 8px;
 }
 .df-sidebar-logo-text {
-  font-size: 16px; font-weight: 600; letter-spacing: -0.03em;
+  font-size: 14px; font-weight: 600; letter-spacing: -0.02em;
   color: var(--df-text-primary);
 }
 .df-nav {
-  flex: 1; padding: 8px;
+  flex: 1; padding: 6px;
   overflow-y: auto;
   display: flex; flex-direction: column; gap: 1px;
 }
 .df-nav-label {
-  font-size: 10px; font-weight: 600;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--df-text-muted);
-  padding: 12px 10px 4px;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--df-text-disabled);
+  padding: 8px 8px 2px;
 }
 .df-nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 10px;
-  border-radius: var(--df-radius-md);
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 9px;
+  border-radius: var(--df-radius);
   font-size: 13px; font-weight: 500;
   color: var(--df-text-secondary);
   transition: all var(--df-transition);
@@ -195,19 +195,19 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
   height: var(--df-topbar-height);
   background-color: var(--df-bg-topbar);
   display: flex; align-items: center;
-  padding: 0 24px; gap: 10px;
+  padding: 0 20px; gap: 8px;
   position: sticky; top: 0; z-index: 30;
   flex-shrink: 0;
 }
 .df-topbar-welcome { flex: 1; min-width: 0; }
 .df-topbar-welcome h2 {
-  font-size: 14px; font-weight: 600;
+  font-size: 13px; font-weight: 600;
   color: var(--df-text-primary);
   line-height: 1.3; margin: 0;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .df-topbar-welcome p {
-  font-size: 12px; color: var(--df-text-muted);
+  font-size: 11px; color: var(--df-text-muted);
   margin: 0; line-height: 1.3;
 }
 .df-topbar-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
@@ -218,8 +218,8 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
   min-height: 100vh; display: flex; flex-direction: column;
   background-color: var(--df-bg-page);
 }
-.df-content { flex: 1; padding: 20px 24px; overflow-x: hidden; }
-.modo-panel { padding: 16px 20px; }
+.df-content { flex: 1; padding: 16px 20px; overflow-x: hidden; }
+.modo-panel { padding: 12px 16px; }
 
 /* ── Cards ───────────────────────────────────────────────── */
 .df-card {
@@ -232,28 +232,28 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
 /* ── KPI Cards ──────────────────────────────────────────── */
 .df-kpi-card {
   background-color: var(--df-bg-surface);
-  border-radius: var(--df-radius-lg);
-  padding: 16px;
+  border-radius: var(--df-radius);
+  padding: 12px;
   position: relative; overflow: hidden;
   transition: all var(--df-transition);
   box-shadow: var(--df-shadow-card);
 }
 .df-kpi-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.3); transform: translateY(-1px); }
 .df-kpi-icon {
-  width: 42px; height: 42px; border-radius: 10px;
+  width: 34px; height: 34px; border-radius: 8px;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .df-kpi-value {
-  font-size: 26px; font-weight: 700; letter-spacing: -0.04em;
+  font-size: 22px; font-weight: 700; letter-spacing: -0.04em;
   color: var(--df-text-primary); line-height: 1;
 }
 .df-kpi-label {
-  font-size: 11px; font-weight: 500;
+  font-size: 10px; font-weight: 500;
   color: var(--df-text-muted);
   text-transform: uppercase; letter-spacing: 0.06em;
 }
 .df-kpi-delta {
-  font-size: 11px; font-weight: 500;
+  font-size: 10px; font-weight: 500;
   display: inline-flex; align-items: center; gap: 3px;
 }
 .df-kpi-delta.up     { color: #34d399; }
@@ -274,17 +274,17 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
 
 /* ── Sidebar help card ──────────────────────────────────── */
 .df-sidebar-help {
-  margin: 0 8px 10px;
-  padding: 12px 14px;
-  background: rgba(99,102,241,0.06);
-  border-radius: 10px;
+  margin: 0 6px 8px;
+  padding: 10px 12px;
+  background: rgba(99,102,241,0.05);
+  border-radius: 8px;
 }
 .df-sidebar-help-title {
-  font-size: 12px; font-weight: 600; color: var(--df-text-primary);
-  margin-bottom: 3px;
+  font-size: 11px; font-weight: 600; color: var(--df-text-primary);
+  margin-bottom: 2px;
 }
 .df-sidebar-help-sub {
-  font-size: 11px; color: var(--df-text-muted); margin-bottom: 8px;
+  font-size: 11px; color: var(--df-text-muted); margin-bottom: 6px;
 }
 .df-sidebar-help-link {
   font-size: 11px; font-weight: 500; color: var(--df-accent);
@@ -295,11 +295,11 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
 
 /* ── Upload zone v12 ────────────────────────────────────── */
 .df-upload-zone-v12 {
-  border-radius: 16px;
-  border: 2px dashed var(--df-border-default);
+  border-radius: 12px;
+  border: 1.5px dashed var(--df-border-default);
   background: var(--df-bg-surface);
   transition: all 200ms;
-  padding: 40px 24px;
+  padding: 20px 16px;
   text-align: center;
   cursor: pointer;
   display: block;
@@ -308,16 +308,16 @@ input::placeholder, textarea::placeholder { color: var(--df-text-muted); }
 .df-upload-zone-v12.dragging { border-color: var(--df-accent); background: rgba(99,102,241,0.08); }
 .df-upload-zone-v12.disabled { cursor: not-allowed; opacity: 0.55; }
 .df-upload-icon-wrap {
-  width: 68px; height: 68px; border-radius: 16px;
+  width: 44px; height: 44px; border-radius: 10px;
   background: rgba(99,102,241,0.15);
   display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 16px;
+  margin: 0 auto 10px;
 }
 .df-upload-btn {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 20px; border-radius: 8px;
-  background: var(--df-accent); color: #fff; font-size: 13px; font-weight: 500;
-  border: none; cursor: pointer; margin-top: 12px;
+  padding: 6px 16px; border-radius: 6px;
+  background: var(--df-accent); color: #fff; font-size: 12px; font-weight: 500;
+  border: none; cursor: pointer; margin-top: 8px;
   transition: background var(--df-transition);
 }
 .df-upload-btn:hover { background: var(--df-accent-hover); }
