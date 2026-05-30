@@ -170,7 +170,7 @@ export function UserAdminModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl max-h-[85vh] overflow-y-auto rounded-2xl border border-neutral-800 bg-neutral-900 p-4">
+      <div className="w-full max-w-6xl max-h-[88vh] overflow-y-auto rounded-2xl border border-neutral-800 bg-neutral-900 p-4">
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-semibold">Gestionar usuarios</h3>
           <button onClick={onClose} className="text-neutral-400 hover:text-neutral-200">Cerrar</button>
