@@ -298,26 +298,29 @@ select option {
 .df-prox-wrapper {
   position: relative;
   margin-bottom: 10px;
-  overflow: visible;
 }
 .df-nav-item-prox {
   position: relative;
+  padding-right: 52px;
   border-color: rgba(99,102,241,0.4) !important;
   color: #a5b4fc !important;
   animation: df-neon-glow 2.4s ease-in-out infinite;
+  overflow: visible;
 }
 .df-nav-item-prox:hover { background-color: rgba(99,102,241,0.10) !important; color: #c7d2fe !important; }
 .df-nav-item-prox .df-nav-icon { color: #818cf8 !important; opacity: 1 !important; }
 .df-prox-badge {
   position: absolute;
-  top: -8px; right: 6px;
-  background: rgba(99,102,241,0.88); color: #e0e7ff;
-  font-size: 9px; font-weight: 700; letter-spacing: 0.07em;
-  padding: 2px 7px;
-  border-radius: var(--df-radius-md);
-  border: 1px solid rgba(149,153,255,0.50);
-  box-shadow: 0 0 8px rgba(99,102,241,0.45);
+  top: 50%; right: 8px;
+  transform: translateY(-50%);
+  background: rgba(99,102,241,0.30);
+  color: #a5b4fc;
+  font-size: 8px; font-weight: 700; letter-spacing: 0.07em;
+  padding: 2px 6px;
+  border-radius: var(--df-radius-sm);
+  border: 1px solid rgba(99,102,241,0.40);
   pointer-events: none;
+  white-space: nowrap;
 }
 .df-prox-modal {
   background: linear-gradient(145deg, #151c2e 0%, #0f1624 60%, #13102a 100%);

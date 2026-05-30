@@ -1741,7 +1741,6 @@ return (
         {/* Crear Información — solo rrhh, próximamente */}
         {meRole === 'rrhh' && (
           <div className="df-prox-wrapper">
-            <span className="df-prox-badge">PRONTO</span>
             <button
               onClick={() => setProxOpen(true)}
               className="df-nav-item df-nav-item-prox"
@@ -1751,6 +1750,7 @@ return (
                 <path d="M8 1v14M1 8h14" strokeWidth="2"/>
               </svg>
               Crear Información
+              <span className="df-prox-badge">PRONTO</span>
             </button>
           </div>
         )}
