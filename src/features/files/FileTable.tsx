@@ -340,7 +340,7 @@ export function FileTable({
                               ✅ Marcar descargado
                             </button>
                           )}
-                          {(meRole === "rrhh" || meRole === "admin") && (
+                          {(meRole === "rrhh" || isAdmin || isSuperAdmin) && (
                             <>
                               <div className="px-2 pt-2 pb-1 text-[11px] uppercase tracking-wide text-neutral-500">Arreglos</div>
                               <button onClick={() => { setRowMenuOpen(null); setRowMenuAnchor(null); openAdjustForFile(f); }} className={MENU_ITEM} title="Solicitar arreglos de información para este archivo">
@@ -348,7 +348,7 @@ export function FileTable({
                               </button>
                             </>
                           )}
-                          {(meRole === "sueldos" || meRole === "admin") && (
+                          {(meRole === "sueldos" || isAdmin || isSuperAdmin) && (
                             <>
                               <div className="px-2 pt-2 pb-1 text-[11px] uppercase tracking-wide text-neutral-500">Dudas</div>
                               <button onClick={() => { setRowMenuOpen(null); setRowMenuAnchor(null); setObserveDialog({ open: true, fileId: f.id, rows: [blankObsRow()] }); }} className={MENU_ITEM} title="Cargar dudas por funcionario">

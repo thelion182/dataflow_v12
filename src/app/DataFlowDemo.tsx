@@ -2600,7 +2600,7 @@ return (
           </button>
 
           {/* Procesar Dudas — solo Sueldos */}
-          {meRole === 'sueldos' && (
+          {(meRole === 'sueldos' || isSuperAdmin) && (
             <button
               type="button"
               onClick={() => setProcesarDudasOpen(true)}
@@ -2822,7 +2822,7 @@ return (
       )}
 
       {/* MODAL: Procesar dudas / arreglos (Sueldos) */}
-      {procesarDudasOpen && meRole === 'sueldos' && (
+      {procesarDudasOpen && (meRole === 'sueldos' || isSuperAdmin) && (
         <ProcesarDudasModal
           files={files.filter(f => !f.eliminated && f.periodId === selectedPeriodId)}
           meId={me?.id || ''}

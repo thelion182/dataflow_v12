@@ -165,6 +165,10 @@ Ver `BACKEND_GUIDE.md` — guía completa con pasos, SQL, endpoints, LDAP, nginx
 3. `cp .env.example .env.local` → editar `VITE_USE_API=true` y `VITE_API_URL=http://servidor/api`
 4. `npm run dev` — el switch es automático, sin tocar ningún otro archivo
 
+## Cambios en v12 — permisos superadmin en módulo Información (2026-05-30)
+- `src/features/files/FileTable.tsx`: Arreglos y Dudas en el row menu ahora incluyen `isSuperAdmin` (antes solo rrhh/admin para Arreglos y sueldos/admin para Dudas)
+- `src/app/DataFlowDemo.tsx`: botón "Procesar dudas / arreglos" y modal ProcesarDudasModal ahora visible para superadmin además de sueldos
+
 ## Cambios en v12 — ajustes UI/UX adicionales (2026-05-29)
 - `src/index.css`: logo sidebar más grande (padding 22px 16px 18px, text 17px); nav gap 3px, item padding 9px 12px, font 14px; KPI cards padding 18px 14px; upload zone padding 30px; dropzone glows reposicionados a esquinas inferiores (`radial-gradient ellipse at 0% 100%` y `100% 100%`); modo-panel padding 20px
 - `src/app/DataFlowDemo.tsx`: logo 50×50px; paginación configurable (`tablePageSize` + `tableExpanded` states con localStorage); KPI cards layout vertical centrado (`flex-col items-center text-center`); props `tablePageSize/updateTablePageSize/tableExpanded/setTableExpanded` pasados a FileTable
