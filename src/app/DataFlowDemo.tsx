@@ -369,7 +369,7 @@ const DEFAULT_HELP =
 
 ## Módulos
 
-**Información** — Gestión de archivos entre RRHH e Información.
+**Información** — Gestión centralizada de archivos para liquidaciones.
 - Subir archivos para cada liquidación
 - Controlar estados (cargado, descargado, con dudas, etc.)
 - Ver trazabilidad completa por archivo
@@ -1995,7 +1995,7 @@ return (
               <p className="truncate" style={{ color: 'var(--df-text-muted)', fontSize: '12px' }}>
                 {showFirstPeriodHint
                   ? <span className="text-amber-400 animate-pulse">Seleccioná una liquidación para comenzar</span>
-                  : 'Gestión de archivos entre RRHH (Información) y Sueldos'}
+                  : 'Gestión centralizada de archivos para liquidaciones'}
               </p>
             </div>
           </div>
