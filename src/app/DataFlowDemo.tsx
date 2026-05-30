@@ -2572,7 +2572,7 @@ return (
                 setDoubtMode("all");
                 setDoubtValue("");
               }}
-              className="px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 hover:bg-neutral-800 text-sm"
+              className="df-btn-filter-active px-3 py-2 rounded-xl bg-neutral-900 border text-sm"
               aria-label="Limpiar filtros"
             >
               Limpiar

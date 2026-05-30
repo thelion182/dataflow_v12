@@ -355,6 +355,30 @@ select option {
 [data-theme="light"] .df-prox-badge-lg { color: #4338ca; background: rgba(99,102,241,0.10); border-color: rgba(99,102,241,0.30); }
 [data-theme="light"] .df-prox-close-btn { background: rgba(99,102,241,0.12); color: #4338ca; border-color: rgba(99,102,241,0.35); }
 [data-theme="light"] .df-prox-close-btn:hover { background: rgba(99,102,241,0.22); color: #312e81; }
+
+/* ── Botón "Limpiar filtros" activo — pulso neon ámbar ──── */
+@keyframes df-filter-active-pulse {
+  0%, 100% { box-shadow: 0 0 7px rgba(251,191,36,0.6), 0 0 16px rgba(251,191,36,0.25); border-color: rgba(251,191,36,0.65); color: #fbbf24; }
+  50%       { box-shadow: 0 0 2px rgba(251,191,36,0.15); border-color: rgba(251,191,36,0.20); color: #d97706; }
+}
+.df-btn-filter-active {
+  animation: df-filter-active-pulse 1.8s ease-in-out infinite;
+  border-color: rgba(251,191,36,0.65) !important;
+  color: #fbbf24 !important;
+}
+[data-theme="light"] .df-btn-filter-active {
+  animation: df-filter-active-pulse 1.8s ease-in-out infinite;
+  border-color: rgba(180,120,0,0.60) !important;
+  color: #92400e !important;
+}
+@keyframes df-filter-active-pulse-light {
+  0%, 100% { box-shadow: 0 0 6px rgba(217,119,6,0.45), 0 0 14px rgba(217,119,6,0.15); border-color: rgba(180,120,0,0.60); color: #92400e; }
+  50%       { box-shadow: 0 0 1px rgba(217,119,6,0.10); border-color: rgba(180,120,0,0.25); color: #b45309; }
+}
+[data-theme="light"] .df-btn-filter-active {
+  animation: df-filter-active-pulse-light 1.8s ease-in-out infinite;
+}
+
 .df-kpi-delta.up     { color: #34d399; }
 .df-kpi-delta.down   { color: #f87171; }
 .df-kpi-delta.warn   { color: #fbbf24; }
