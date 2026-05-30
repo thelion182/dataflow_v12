@@ -179,6 +179,10 @@ Ver `BACKEND_GUIDE.md` — guía completa con pasos, SQL, endpoints, LDAP, nginx
 - `src/features/files/FileTable.tsx`: Arreglos y Dudas en el row menu ahora incluyen `isSuperAdmin` (antes solo rrhh/admin para Arreglos y sueldos/admin para Dudas)
 - `src/app/DataFlowDemo.tsx`: botón "Procesar dudas / arreglos" y modal ProcesarDudasModal ahora visible para superadmin además de sueldos
 
+## Cambios en v12 — sidebar Crear Información + badge PRONTO + animación paneles (2026-05-30)
+- `src/app/DataFlowDemo.tsx`: botón "Crear Información" (solo rrhh) en sidebar con `proxOpen` state y modal "Próximamente"; badge `<span className="df-prox-badge">PRONTO</span>` dentro del botón, pequeño (8px), centrado verticalmente a la derecha con `padding-right: 52px` en el botón; Reclamos siempre segundo bajo Información en el sidebar; logo `h-10`, texto nav `19px`; barra de progreso HSL red→green con `#10b981` al 100%; `modo-panel` con `key` para disparar animación CSS al cambiar entre Información y Reclamos
+- `src/index.css`: `.df-prox-wrapper` con `margin-bottom: 10px`; `.df-nav-item-prox` con `position: relative; padding-right: 52px; overflow: visible; animation: df-neon-glow`; `.df-prox-badge` con `position: absolute; top: 50%; right: 8px; transform: translateY(-50%); border-radius: var(--df-radius-sm)`; `@keyframes df-panel-enter` fade+translateY en `.modo-panel`; light mode overrides para elementos prox
+
 ## Cambios en v12 — ajustes UI/UX adicionales (2026-05-29)
 - `src/index.css`: logo sidebar más grande (padding 22px 16px 18px, text 17px); nav gap 3px, item padding 9px 12px, font 14px; KPI cards padding 18px 14px; upload zone padding 30px; dropzone glows reposicionados a esquinas inferiores (`radial-gradient ellipse at 0% 100%` y `100% 100%`); modo-panel padding 20px
 - `src/app/DataFlowDemo.tsx`: logo 50×50px; paginación configurable (`tablePageSize` + `tableExpanded` states con localStorage); KPI cards layout vertical centrado (`flex-col items-center text-center`); props `tablePageSize/updateTablePageSize/tableExpanded/setTableExpanded` pasados a FileTable
