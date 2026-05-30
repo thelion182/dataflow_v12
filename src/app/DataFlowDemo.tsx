@@ -1589,47 +1589,50 @@ const overlay = (() => {
 
   if (!me) {
     return (
-      <div className="fixed inset-0 z-[9999] overflow-auto bg-neutral-950/95 backdrop-blur-sm text-neutral-100">
+      <div className="fixed inset-0 z-[9999] overflow-auto" style={{ background: 'var(--df-bg-page)', color: 'var(--df-text-primary)' }}>
         <div className="min-h-[100vh] grid place-items-center p-6">
-          <div className="w-full max-w-md rounded-2xl border border-neutral-800 bg-neutral-900 p-5 shadow-2xl">
-            <div className="flex justify-center mb-3"><Logo className="h-20" /></div>
-            <h1 className="font-bold mb-2 text-center leading-none select-none" aria-label={APP.NAME}>
-              <span style={{ color: isDark ? "#ffffff" : "#0f172a", letterSpacing:"-0.04em", fontWeight:300, fontSize:"2rem" }}>Dataflow</span>
+          <div className="w-full max-w-sm rounded-2xl p-6" style={{ background: 'var(--df-bg-surface)', border: '1px solid var(--df-border-default)', boxShadow: 'var(--df-shadow-modal)' }}>
+            <div className="flex justify-center mb-4"><Logo className="h-16" /></div>
+            <h1 className="mb-1 text-center select-none" style={{ fontSize: '22px', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--df-text-primary)' }}>
+              Dataflow
             </h1>
-            <p className="text-neutral-400 mb-4 text-center" style={{ fontSize: '0.75rem' }}>
+            <p className="mb-5 text-center" style={{ fontSize: '0.72rem', color: 'var(--df-text-secondary)' }}>
               {APP.TAGLINE || "Iniciá sesión con tu usuario y contraseña."}
             </p>
 
             <form onSubmit={handleLoginSubmit} className="space-y-3">
               <div className="space-y-1">
-                <label className="text-sm text-neutral-300">Usuario</label>
+                <label className="block text-sm" style={{ color: 'var(--df-text-secondary)' }}>Usuario</label>
                 <input
                   value={loginForm.username}
                   onChange={(e) => setLoginForm((s) => ({ ...s, username: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-xl bg-neutral-800 outline-none"
+                  className="w-full px-3 py-2 rounded-xl outline-none text-sm"
+                  style={{ background: 'var(--df-bg-input)', border: '1px solid var(--df-border-default)', color: 'var(--df-text-primary)' }}
                   placeholder="ej: admin"
                   autoFocus
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-sm text-neutral-300">Contraseña</label>
+                <label className="block text-sm" style={{ color: 'var(--df-text-secondary)' }}>Contraseña</label>
                 <input
                   type="password"
                   value={loginForm.password}
                   onChange={(e) => setLoginForm((s) => ({ ...s, password: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-xl bg-neutral-800 outline-none"
+                  className="w-full px-3 py-2 rounded-xl outline-none text-sm"
+                  style={{ background: 'var(--df-bg-input)', border: '1px solid var(--df-border-default)', color: 'var(--df-text-primary)' }}
                   placeholder="••••••••"
                 />
               </div>
 
-              {!!loginError && <div className="text-rose-300 text-sm">{loginError}</div>}
+              {!!loginError && <div className="text-sm" style={{ color: '#f87171' }}>{loginError}</div>}
 
               <button
                 type="submit"
                 onClick={handleLoginSubmit}
                 disabled={!bootReady}
-                className="w-full px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-3 py-2 rounded-xl text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                style={{ background: 'var(--df-accent)', color: '#fff' }}
               >
                 {bootReady ? "Entrar" : "Preparando…"}
               </button>
@@ -1644,38 +1647,44 @@ const overlay = (() => {
 
   if (changingPwd) {
     return (
-      <div className="fixed inset-0 z-[9999] overflow-auto bg-neutral-950/95 backdrop-blur-sm text-neutral-100">
+      <div className="fixed inset-0 z-[9999] overflow-auto" style={{ background: 'var(--df-bg-page)', color: 'var(--df-text-primary)' }}>
         <div className="min-h-[100vh] grid place-items-center p-6">
-          <div className="w-full max-w-md rounded-2xl border border-neutral-800 bg-neutral-900 p-5 shadow-2xl">
-            <h2 className="text-xl font-semibold mb-2 text-center">Cambiar contraseña</h2>
-            <p className="text-neutral-400 text-sm mb-4 text-center">
-              Hola <span className="text-neutral-200 font-medium">{me?.username}</span>, necesitás establecer una contraseña nueva.
+          <div className="w-full max-w-sm rounded-2xl p-6" style={{ background: 'var(--df-bg-surface)', border: '1px solid var(--df-border-default)', boxShadow: 'var(--df-shadow-modal)' }}>
+            <h2 className="mb-1 text-center" style={{ fontSize: '18px', fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--df-text-primary)' }}>Cambiar contraseña</h2>
+            <p className="text-sm mb-5 text-center" style={{ color: 'var(--df-text-secondary)' }}>
+              Hola <span style={{ color: 'var(--df-text-primary)', fontWeight: 500 }}>{me?.username}</span>, necesitás establecer una contraseña nueva.
             </p>
 
             <form onSubmit={handleChangePassword} className="space-y-3">
               <div className="space-y-1">
-                <label className="text-sm text-neutral-300">Nueva contraseña</label>
+                <label className="block text-sm" style={{ color: 'var(--df-text-secondary)' }}>Nueva contraseña</label>
                 <input
                   type="password"
                   value={newPwd}
                   onChange={(e) => setNewPwd(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-neutral-800 outline-none"
+                  className="w-full px-3 py-2 rounded-xl outline-none text-sm"
+                  style={{ background: 'var(--df-bg-input)', border: '1px solid var(--df-border-default)', color: 'var(--df-text-primary)' }}
                   placeholder="Mínimo 8 caracteres"
                 />
               </div>
 
-              {!!loginError && <div className="text-rose-300 text-sm">{loginError}</div>}
+              {!!loginError && <div className="text-sm" style={{ color: '#f87171' }}>{loginError}</div>}
 
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => { setChangingPwd(false); handleLogout(); }}
-                  className="px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 hover:bg-neutral-800"
+                  className="px-3 py-2 rounded-xl text-sm transition-colors"
+                  style={{ background: 'var(--df-bg-elevated)', border: '1px solid var(--df-border-default)', color: 'var(--df-text-secondary)' }}
                 >
                   Cancelar
                 </button>
 
-                <button type="submit" className="px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700">
+                <button
+                  type="submit"
+                  className="px-3 py-2 rounded-xl text-sm font-semibold transition-colors"
+                  style={{ background: 'var(--df-accent)', color: '#fff' }}
+                >
                   Guardar
                 </button>
               </div>
