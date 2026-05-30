@@ -165,6 +165,11 @@ Ver `BACKEND_GUIDE.md` — guía completa con pasos, SQL, endpoints, LDAP, nginx
 3. `cp .env.example .env.local` → editar `VITE_USE_API=true` y `VITE_API_URL=http://servidor/api`
 4. `npm run dev` — el switch es automático, sin tocar ningún otro archivo
 
+## Cambios en v12 — bloqueo de carga por período + fix duplicados (2026-05-30)
+- `src/hooks/useFiles.ts`: `isUploadAllowedForRole` ahora bloquea a TODOS los roles (incluido superadmin) cuando la liquidación está bloqueada sin fechas, o bloqueada y fuera de la ventana de carga; alerta reemplazada por toast con mensaje descriptivo
+- `src/hooks/useFiles.ts`: `deleteFile` ahora es async y llama `DELETE /api/files/:id?hard=true` en API mode para hacer el hard delete real en el backend (fix del bug de duplicados al re-subir tras borrar)
+- `src/app/DataFlowDemo.tsx`: `uploadBlocked` + `uploadBlockedReason` computados; dropzone muestra overlay con razón cuando la carga está bloqueada; drag/drop e input `disabled` cuando bloqueado
+
 ## Cambios en v12 — permisos superadmin en módulo Información (2026-05-30)
 - `src/features/files/FileTable.tsx`: Arreglos y Dudas en el row menu ahora incluyen `isSuperAdmin` (antes solo rrhh/admin para Arreglos y sueldos/admin para Dudas)
 - `src/app/DataFlowDemo.tsx`: botón "Procesar dudas / arreglos" y modal ProcesarDudasModal ahora visible para superadmin además de sueldos

@@ -239,41 +239,47 @@ export function useFiles({ me, periods, selectedPeriodId, periodNameById, sector
   }
 
   function isUploadAllowedForRole(periodId: string, role?: string | null) {
-    // Admin (y otros roles que no son rrhh) pueden subir siempre
     if (!periodId) return false;
     const p = periods.find((x: any) => x.id === periodId);
-    if (p?.locked && me?.role !== "superadmin") return false;
-    if (role && role !== "rrhh") return true;
     if (!p) return false;
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
     const fromStr = p.uploadFrom as string | undefined;
     const toStr   = p.uploadTo   as string | undefined;
 
-    // Si no hay fechas cargadas, no se restringe
+    if (p.locked) {
+      // bloqueada sin fechas → nadie puede cargar
+      if (!fromStr && !toStr) return false;
+      // bloqueada con fechas → ventana aplica a TODOS los roles
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      if (fromStr) {
+        const fromDay = new Date(fromStr); fromDay.setHours(0, 0, 0, 0);
+        if (today < fromDay) return false;
+      }
+      if (toStr) {
+        const toDay = new Date(toStr); toDay.setHours(0, 0, 0, 0);
+        if (today > toDay) return false;
+      }
+      return true;
+    }
+
+    // no bloqueada: roles no-rrhh siempre pueden
+    if (role && role !== "rrhh") return true;
+
+    // rrhh: verificar ventana de carga
     if (!fromStr && !toStr) return true;
-
-    const from = fromStr ? new Date(fromStr) : null;
-    const to   = toStr   ? new Date(toStr)   : null;
-
-    if (from) {
-      const fromDay = new Date(from);
-      fromDay.setHours(0, 0, 0, 0);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    if (fromStr) {
+      const fromDay = new Date(fromStr); fromDay.setHours(0, 0, 0, 0);
       if (today < fromDay) return false;
     }
-
-    if (to) {
-      const toDay = new Date(to);
-      toDay.setHours(0, 0, 0, 0);
+    if (toStr) {
+      const toDay = new Date(toStr); toDay.setHours(0, 0, 0, 0);
       if (today > toDay) return false;
     }
-
     return true;
   }
 
-  function deleteFile(id: string) {
+  async function deleteFile(id: string) {
     const isSuperAdmin = me?.role === "superadmin";
     const isAdminRole  = me?.role === "admin";
 
@@ -288,6 +294,19 @@ export function useFiles({ me, periods, selectedPeriodId, periodNameById, sector
     if (isSuperAdmin) {
       // Hard delete: elimina físicamente del array y del storage
       if (!confirm(`¿ELIMINAR DEFINITIVAMENTE "${f.name}"?\nEsta acción no se puede deshacer y no deja trazabilidad.`)) return;
+      if (USE_API) {
+        try {
+          const res = await fetch(`${API_URL}/files/${id}?hard=true`, { method: 'DELETE', credentials: 'include' });
+          if (!res.ok) {
+            const d = await res.json().catch(() => ({}));
+            alert(d.error || 'Error al eliminar el archivo en el servidor.');
+            return;
+          }
+        } catch {
+          alert('Error de conexión al eliminar el archivo.');
+          return;
+        }
+      }
       setFiles((prev) => prev.filter((x) => x.id !== id));
       db.files.appendAudit({ t: new Date().toISOString(), action: "hard_delete", byUserId: me?.id || "", byUsername: me?.username || "sistema", details: `Archivo eliminado: "${f.name}" (período: ${f.periodId})`, fileId: id, periodId: f.periodId });
       publishEvent({
@@ -383,7 +402,7 @@ export function useFiles({ me, periods, selectedPeriodId, periodNameById, sector
       return;
     }
 
-    // 👉 NUEVO: verificar ventana de carga para RRHH
+    // Verificar ventana de carga / bloqueo de período
     const allowed = isUploadAllowedForRole(selectedPeriodId, me?.role);
     if (!allowed) {
       if (ev?.target) (ev.target as any).value = "";
@@ -392,15 +411,15 @@ export function useFiles({ me, periods, selectedPeriodId, periodNameById, sector
       const fromStr = p?.uploadFrom || "";
       const toStr   = p?.uploadTo   || "";
 
-      let msg = "Para esta liquidación ya no está habilitada la carga de archivos desde Información (RRHH).";
-      if (fromStr || toStr) {
-        msg += "\n\nVentana de carga definida:";
-        msg += `\n- Desde: ${fromStr || "sin límite de inicio"}`;
-        msg += `\n- Hasta: ${toStr || "sin límite de fin"}`;
+      let toastMsg = "";
+      if (p?.locked && !fromStr && !toStr) {
+        toastMsg = `La liquidación "${p?.name || ''}" está bloqueada y no tiene ventana de carga habilitada. Consultá con el administrador.`;
+      } else if (p?.locked) {
+        toastMsg = `La liquidación está bloqueada. Estás fuera de la ventana de carga (${fromStr || '—'} → ${toStr || '—'}). Consultá con el administrador.`;
+      } else {
+        toastMsg = `Fuera de la ventana de carga habilitada (${fromStr || 'sin inicio'} → ${toStr || 'sin fin'}). Consultá con el administrador.`;
       }
-      msg += "\n\nConsultá con un administrador si necesitás habilitarla o extenderla.";
-
-      alert(msg);
+      pushToast({ title: "Carga no permitida", message: toastMsg });
       return;
     }
 

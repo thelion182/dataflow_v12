@@ -1229,6 +1229,17 @@ const [helpOpen, setHelpOpen] = useState(false);
 
 
   const sortedPeriods = useMemo(() => [...periods].sort((a, b) => b.year - a.year || b.month - a.month), [periods]);
+
+  const selectedPeriod = useMemo(() => periods.find((p: any) => p.id === selectedPeriodId) || null, [periods, selectedPeriodId]);
+  const uploadBlocked = selectedPeriodId ? !isUploadAllowedForRole(selectedPeriodId, meRole) : false;
+  const uploadBlockedReason = useMemo(() => {
+    if (!selectedPeriod || !uploadBlocked) return '';
+    const from = selectedPeriod.uploadFrom || '';
+    const to   = selectedPeriod.uploadTo   || '';
+    if (selectedPeriod.locked && !from && !to) return '🔒 La liquidación está bloqueada sin ventana de carga habilitada.';
+    if (selectedPeriod.locked) return `🔒 La liquidación está bloqueada. Estás fuera de la ventana de carga (${from || '—'} → ${to || '—'}).`;
+    return `Estás fuera de la ventana de carga habilitada (${from || 'sin inicio'} → ${to || 'sin fin'}).`;
+  }, [selectedPeriod, uploadBlocked]);
   const selectedFile = useMemo(() => files.find((f) => f.id === selected) || null, [files, selected]);
 
   const filesCountByPeriod = useMemo(() => {
@@ -2138,20 +2149,29 @@ return (
               </div>
             </div>
           )}
+          {/* Bloqueo visual cuando la carga no está permitida (bloqueada / fuera de fecha) */}
+          {selectedPeriodId && uploadBlocked && (
+            <div className="absolute inset-0 z-10 bg-black/70 backdrop-blur-[2px] flex items-center justify-center rounded-2xl">
+              <div className="text-center px-4">
+                <div className="text-sm font-semibold text-amber-300 mb-1">Carga de archivos deshabilitada</div>
+                <div className="text-xs text-neutral-400">{uploadBlockedReason}</div>
+              </div>
+            </div>
+          )}
 
           <label
             className={cls(
               "df-upload-zone-v12",
               isDraggingOver ? "dragging" : "",
-              !selectedPeriodId ? "disabled" : ""
+              (!selectedPeriodId || uploadBlocked) ? "disabled" : ""
             )}
-            onDragOver={(e) => { e.preventDefault(); if (selectedPeriodId && myPerms.actions.bumpVersion) setIsDraggingOver(true); }}
-            onDragEnter={(e) => { e.preventDefault(); if (selectedPeriodId && myPerms.actions.bumpVersion) setIsDraggingOver(true); }}
+            onDragOver={(e) => { e.preventDefault(); if (selectedPeriodId && !uploadBlocked && myPerms.actions.bumpVersion) setIsDraggingOver(true); }}
+            onDragEnter={(e) => { e.preventDefault(); if (selectedPeriodId && !uploadBlocked && myPerms.actions.bumpVersion) setIsDraggingOver(true); }}
             onDragLeave={(e) => { e.preventDefault(); setIsDraggingOver(false); }}
             onDrop={(e) => {
               e.preventDefault();
               setIsDraggingOver(false);
-              if (!selectedPeriodId || !myPerms.actions.bumpVersion) return;
+              if (!selectedPeriodId || uploadBlocked || !myPerms.actions.bumpVersion) return;
               const files = e.dataTransfer?.files;
               if (files?.length) handleUpload({ target: { files } });
             }}
@@ -2162,7 +2182,7 @@ return (
               multiple
               className="hidden"
               onChange={handleUpload}
-              disabled={!selectedPeriodId || !myPerms.actions.bumpVersion}
+              disabled={!selectedPeriodId || uploadBlocked || !myPerms.actions.bumpVersion}
             />
             {/* Ícono cloud upload */}
             <div className="df-upload-icon-wrap">
@@ -2182,7 +2202,7 @@ return (
               {isDraggingOver ? 'Soltá para subir' : 'Arrastrá y soltá archivos'}
             </div>
             <div className="text-[11px] mb-2" style={{ color: 'var(--df-text-muted)' }}>CSV, TXT, Excel, ODS</div>
-            <span className={cls("df-upload-btn", !selectedPeriodId && "opacity-50 cursor-not-allowed")}>
+            <span className={cls("df-upload-btn", (!selectedPeriodId || uploadBlocked) && "opacity-50 cursor-not-allowed")}>
               Seleccionar archivos
             </span>
             {selectedPeriodId && (
