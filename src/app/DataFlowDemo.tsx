@@ -1746,6 +1746,14 @@ return (
           Información
         </button>
 
+        {/* Reclamos */}
+        <button onClick={() => toggleModo("reclamos")} className={`df-nav-item ${modoActivo === 'reclamos' ? 'active' : ''}`} title="Módulo Reclamos de haberes">
+          <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H2a1 1 0 00-1 1v7a1 1 0 001 1h3l3 3 3-3h3a1 1 0 001-1V3a1 1 0 00-1-1z"/>
+          </svg>
+          Reclamos
+        </button>
+
         {/* Gestión — collapsible */}
         <button
           onClick={(e) => { e.stopPropagation(); setMenuOpen(m => m === 'gestion' ? null : 'gestion'); }}
@@ -1883,14 +1891,6 @@ return (
             )}
           </>
         )}
-
-        {/* Reclamos */}
-        <button onClick={() => toggleModo("reclamos")} className={`df-nav-item ${modoActivo === 'reclamos' ? 'active' : ''}`} title="Módulo Reclamos de haberes">
-          <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M14 2H2a1 1 0 00-1 1v7a1 1 0 001 1h3l3 3 3-3h3a1 1 0 001-1V3a1 1 0 00-1-1z"/>
-          </svg>
-          Reclamos
-        </button>
 
         {/* Usuarios */}
         {myPerms?.actions?.manageUsers && (

@@ -154,7 +154,7 @@ select option {
 .df-nav {
   flex: 1; padding: 4px 8px;
   overflow-y: auto;
-  display: flex; flex-direction: column; gap: 3px;
+  display: flex; flex-direction: column; gap: 6px;
 }
 .df-nav-label {
   font-size: 10px; font-weight: 500;
@@ -163,15 +163,15 @@ select option {
   padding: 8px 8px 2px;
 }
 .df-nav-item {
-  display: flex; align-items: center; gap: 9px;
-  padding: 9px 12px;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  padding: 10px 12px;
   border-radius: var(--df-radius-md);
   font-size: 14px; font-weight: 500;
   color: var(--df-text-secondary);
   transition: all var(--df-transition);
   cursor: pointer;
   border: 1px solid transparent;
-  width: 100%; text-align: left; background: transparent;
+  width: 100%; text-align: center; background: transparent;
 }
 .df-nav-item:hover {
   background-color: var(--df-bg-hover);
