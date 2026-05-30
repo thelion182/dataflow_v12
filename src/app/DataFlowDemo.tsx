@@ -2241,32 +2241,33 @@ return (
         return (
           <div className="px-1 py-2">
             <div className="flex items-center justify-between gap-2 mb-1">
-              <span className="text-[11px] text-neutral-600 shrink-0">
+              <span className={cls("text-[11px] shrink-0", isDark ? "text-neutral-500" : "text-neutral-400")}>
                 {uploadFrom ? (
-                  <>Desde <span className="text-neutral-400">{fmtDate(uploadFrom)}</span></>
+                  <>Desde <span className={isDark ? "text-neutral-400" : "text-neutral-600"}>{fmtDate(uploadFrom)}</span></>
                 ) : null}
               </span>
               <span
-                className={cls(
-                  "text-[11px] font-medium",
-                  deliveryProgress.allDone ? "text-green-500" : "text-neutral-500"
-                )}
+                className="text-[11px] font-medium"
+                style={{ color: `hsl(${Math.round(deliveryProgress.pct * 1.2)}, 65%, ${isDark ? '55%' : '38%'})` }}
               >
                 {deliveryProgress.done}/{deliveryProgress.total} sectores · {deliveryProgress.pct}%
               </span>
-              <span className="text-[11px] text-neutral-600 shrink-0">
+              <span className={cls("text-[11px] shrink-0", isDark ? "text-neutral-500" : "text-neutral-400")}>
                 {uploadTo ? (
-                  <>Hasta <span className="text-neutral-400">{fmtDate(uploadTo)}</span></>
+                  <>Hasta <span className={isDark ? "text-neutral-400" : "text-neutral-600"}>{fmtDate(uploadTo)}</span></>
                 ) : null}
               </span>
             </div>
-            <div className="h-1 w-full rounded-full bg-neutral-800/80 overflow-hidden">
+            <div
+              className="h-1.5 w-full rounded-full overflow-hidden"
+              style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.10)' }}
+            >
               <div
-                className={cls(
-                  "h-full rounded-full transition-all duration-500",
-                  deliveryProgress.allDone ? "bg-green-600/70" : "bg-neutral-600"
-                )}
-                style={{ width: `${deliveryProgress.pct}%` }}
+                className="h-full rounded-full transition-all duration-500"
+                style={{
+                  width: `${deliveryProgress.pct}%`,
+                  backgroundColor: `hsl(${Math.round(deliveryProgress.pct * 1.2)}, 65%, ${isDark ? '48%' : '42%'})`,
+                }}
               />
             </div>
           </div>
