@@ -282,6 +282,57 @@ select option {
 .df-nav-sub-item.danger { color: #f87171; }
 .df-nav-sub-item.danger:hover { background-color: rgba(248,113,113,0.08); }
 .df-nav-chevron { width: 12px; height: 12px; flex-shrink: 0; color: var(--df-text-muted); }
+
+/* ── Próximamente — botón sidebar neon + modal ──────────── */
+@keyframes df-neon-glow {
+  0%, 100% { box-shadow: 0 0 6px rgba(99,102,241,0.55), 0 0 14px rgba(99,102,241,0.25); border-color: rgba(99,102,241,0.55); }
+  50%       { box-shadow: 0 0 2px rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.18); }
+}
+.df-nav-item-prox {
+  border-color: rgba(99,102,241,0.4) !important;
+  color: #a5b4fc !important;
+  animation: df-neon-glow 2.4s ease-in-out infinite;
+}
+.df-nav-item-prox:hover { background-color: rgba(99,102,241,0.10) !important; color: #c7d2fe !important; }
+.df-nav-item-prox .df-nav-icon { color: #818cf8 !important; opacity: 1 !important; }
+.df-prox-badge {
+  background: rgba(99,102,241,0.18); color: #818cf8;
+  padding: 1px 5px; border-radius: 4px; border: 1px solid rgba(99,102,241,0.35);
+  letter-spacing: 0.06em;
+}
+.df-prox-modal {
+  background: linear-gradient(145deg, #151c2e 0%, #0f1624 60%, #13102a 100%);
+  border: 1px solid rgba(99,102,241,0.35);
+  box-shadow: 0 0 40px rgba(99,102,241,0.18), 0 20px 60px rgba(0,0,0,0.6);
+}
+.df-prox-ring {
+  position: absolute; inset: -1px; border-radius: inherit;
+  border: 1px solid rgba(99,102,241,0.25);
+  animation: df-neon-glow 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+.df-prox-badge-lg {
+  display: inline-block;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  color: #818cf8; background: rgba(99,102,241,0.14);
+  border: 1px solid rgba(99,102,241,0.35);
+  padding: 2px 10px; border-radius: 20px;
+}
+.df-prox-close-btn {
+  background: rgba(99,102,241,0.18); color: #a5b4fc;
+  border: 1px solid rgba(99,102,241,0.35);
+  transition: all 0.15s;
+}
+.df-prox-close-btn:hover { background: rgba(99,102,241,0.30); color: #e0e7ff; }
+
+/* light mode overrides */
+[data-theme="light"] .df-nav-item-prox { color: #4338ca !important; border-color: rgba(99,102,241,0.5) !important; }
+[data-theme="light"] .df-nav-item-prox .df-nav-icon { color: #4f46e5 !important; }
+[data-theme="light"] .df-prox-badge { color: #4f46e5; background: rgba(99,102,241,0.10); }
+[data-theme="light"] .df-prox-modal { background: linear-gradient(145deg, #f0f2ff 0%, #eef0ff 60%, #f3f0ff 100%); border-color: rgba(99,102,241,0.40); box-shadow: 0 0 30px rgba(99,102,241,0.12), 0 20px 60px rgba(0,0,0,0.12); }
+[data-theme="light"] .df-prox-badge-lg { color: #4338ca; background: rgba(99,102,241,0.10); border-color: rgba(99,102,241,0.30); }
+[data-theme="light"] .df-prox-close-btn { background: rgba(99,102,241,0.12); color: #4338ca; border-color: rgba(99,102,241,0.35); }
+[data-theme="light"] .df-prox-close-btn:hover { background: rgba(99,102,241,0.22); color: #312e81; }
 .df-kpi-delta.up     { color: #34d399; }
 .df-kpi-delta.down   { color: #f87171; }
 .df-kpi-delta.warn   { color: #fbbf24; }

@@ -524,6 +524,7 @@ const [sectorViewOnlyPending, setSectorViewOnlyPending] = useState(false); // so
   const [resetPeriodPass, setResetPeriodPass] = useState("");
   const [resetPeriodError, setResetPeriodError] = useState("");
   const [dashboardOpen, setDashboardOpen] = useState(false);
+  const [proxOpen, setProxOpen] = useState(false);
 
   // ===== Menús del header (dropdowns) =====
   const [menuOpen, setMenuOpen] = useState<null | "gestion" | "reportes" | "user">(null);
@@ -1737,6 +1738,21 @@ return (
       {/* Navegación principal */}
       <nav className="df-nav">
 
+        {/* Crear Información — solo rrhh, próximamente */}
+        {meRole === 'rrhh' && (
+          <button
+            onClick={() => setProxOpen(true)}
+            className="df-nav-item df-nav-item-prox"
+            title="Próximamente — módulo de gestión de información"
+          >
+            <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 1v14M1 8h14" strokeWidth="2"/>
+            </svg>
+            Crear Información
+            <span className="ml-auto text-[9px] font-semibold tracking-wide df-prox-badge">PRONTO</span>
+          </button>
+        )}
+
         {/* Información */}
         <button onClick={() => toggleModo("informacion")} className={`df-nav-item ${modoActivo === 'informacion' ? 'active' : ''}`} title="Módulo Información — archivos de liquidación">
           <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
@@ -2867,6 +2883,37 @@ return (
           sites={sites}
           onClose={() => setVerPorSectorOpen(false)}
         />
+      )}
+
+      {/* MODAL: Próximamente — Crear Información */}
+      {proxOpen && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" onClick={() => setProxOpen(false)}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div
+            className="relative rounded-2xl p-6 max-w-sm w-full text-center df-prox-modal"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Neon glow ring */}
+            <div className="df-prox-ring" />
+            <div className="text-3xl mb-3">🚀</div>
+            <div className="df-prox-badge-lg mb-1">PRÓXIMAMENTE</div>
+            <h2 className="text-base font-bold mb-2" style={{ color: 'var(--df-text-primary)' }}>
+              Módulo Crear Información
+            </h2>
+            <p className="text-[13px] leading-relaxed mb-4" style={{ color: 'var(--df-text-secondary)' }}>
+              Una nueva forma de generar y gestionar la información de liquidación directamente dentro de Dataflow.
+              Los funcionarios de RRHH y el personal institucional podrán cargar, validar y organizar los datos
+              de cada período desde la misma plataforma — alimentando el flujo de archivos de forma automática,
+              sin depender de procesos externos ni envíos manuales a Sueldos.
+            </p>
+            <button
+              onClick={() => setProxOpen(false)}
+              className="px-4 py-1.5 rounded-lg text-sm font-medium df-prox-close-btn"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Toasts */}
