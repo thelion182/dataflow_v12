@@ -2248,7 +2248,7 @@ return (
               </span>
               <span
                 className="text-[11px] font-medium"
-                style={{ color: `hsl(${Math.round(deliveryProgress.pct * 1.2)}, 65%, ${isDark ? '55%' : '38%'})` }}
+                style={{ color: deliveryProgress.allDone ? '#10b981' : `hsl(${Math.round(deliveryProgress.pct * 1.2)}, 65%, ${isDark ? '55%' : '38%'})` }}
               >
                 {deliveryProgress.done}/{deliveryProgress.total} sectores · {deliveryProgress.pct}%
               </span>
@@ -2266,7 +2266,7 @@ return (
                 className="h-full rounded-full transition-all duration-500"
                 style={{
                   width: `${deliveryProgress.pct}%`,
-                  backgroundColor: `hsl(${Math.round(deliveryProgress.pct * 1.2)}, 65%, ${isDark ? '48%' : '42%'})`,
+                  backgroundColor: deliveryProgress.allDone ? '#10b981' : `hsl(${Math.round(deliveryProgress.pct * 1.2)}, 65%, ${isDark ? '48%' : '42%'})`,
                 }}
               />
             </div>
