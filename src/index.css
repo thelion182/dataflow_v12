@@ -807,7 +807,66 @@ select option {
 [data-theme="light"] .reclamo-modal        { background-color: #ffffff !important; border-color: #e2e8f0 !important; }
 [data-theme="light"] .tabular-nums         { }
 
-/* Zona upload en claro */
+/* ── Dropzone en light mode — gradiente claro lavender ──────── */
+[data-theme="light"] .df-upload-zone-v12 {
+  background: linear-gradient(145deg, #eef1fa 0%, #f0f3fc 40%, #f2f0fc 70%, #f5f0fe 100%) !important;
+  border-color: rgba(99,102,241,0.28) !important;
+}
+[data-theme="light"] .df-upload-zone-v12::before {
+  background: radial-gradient(ellipse at 0% 100%, rgba(99,102,241,0.14) 0%, rgba(99,102,241,0.05) 30%, transparent 62%) !important;
+}
+[data-theme="light"] .df-upload-zone-v12::after {
+  background: radial-gradient(ellipse at 100% 100%, rgba(59,130,246,0.12) 0%, rgba(59,130,246,0.04) 30%, transparent 62%) !important;
+}
+[data-theme="light"] .df-upload-zone-v12:hover {
+  border-color: rgba(99,102,241,0.45) !important;
+  background: linear-gradient(145deg, #e8ecf8 0%, #eaeffa 40%, #ece8fa 70%, #ede8fd 100%) !important;
+}
+[data-theme="light"] .df-upload-zone-v12.dragging {
+  border-color: var(--df-accent) !important;
+  background: linear-gradient(145deg, #e0e7ff 0%, #e4e8ff 100%) !important;
+}
+
+/* ── Colores pastel faltantes para estado de badges ─────────── */
+[data-theme="light"] .text-amber-200    { color: #92400e !important; }
+[data-theme="light"] .text-teal-300     { color: #0f766e !important; }
+[data-theme="light"] .text-teal-400     { color: #0f766e !important; }
+[data-theme="light"] .text-orange-300   { color: #c2410c !important; }
+[data-theme="light"] .text-orange-400   { color: #c2410c !important; }
+[data-theme="light"] .text-fuchsia-300  { color: #a21caf !important; }
+[data-theme="light"] .text-fuchsia-400  { color: #a21caf !important; }
+[data-theme="light"] .text-red-300      { color: #b91c1c !important; }
+[data-theme="light"] .text-red-400      { color: #b91c1c !important; }
+[data-theme="light"] .text-neutral-300  { color: #374155 !important; }
+[data-theme="light"] .text-neutral-400  { color: #4a5a6e !important; }
+
+/* ── Bg opacity variants para badges de estado ──────────────── */
+[data-theme="light"] .bg-amber-500\/30   { background-color: rgba(245,158,11,0.10) !important; }
+[data-theme="light"] .bg-sky-500\/20     { background-color: rgba(14,165,233,0.08) !important; }
+[data-theme="light"] .bg-teal-500\/20    { background-color: rgba(20,184,166,0.08) !important; }
+[data-theme="light"] .bg-orange-500\/20  { background-color: rgba(249,115,22,0.08) !important; }
+[data-theme="light"] .bg-emerald-500\/20 { background-color: rgba(16,185,129,0.08) !important; }
+[data-theme="light"] .bg-indigo-500\/20  { background-color: rgba(99,102,241,0.08) !important; }
+[data-theme="light"] .bg-fuchsia-500\/20 { background-color: rgba(217,70,239,0.07) !important; }
+[data-theme="light"] .bg-red-600\/20     { background-color: rgba(220,38,38,0.07) !important; }
+[data-theme="light"] .bg-rose-500\/20    { background-color: rgba(244,63,94,0.07) !important; }
+[data-theme="light"] .bg-neutral-700\/40 { background-color: rgba(226,232,240,0.7) !important; }
+[data-theme="light"] .bg-neutral-700\/60 { background-color: rgba(226,232,240,0.85) !important; }
+
+/* Borders de badges en light */
+[data-theme="light"] .border-amber-400\/30  { border-color: rgba(245,158,11,0.30) !important; }
+[data-theme="light"] .border-amber-400\/40  { border-color: rgba(245,158,11,0.40) !important; }
+[data-theme="light"] .border-sky-500\/30    { border-color: rgba(14,165,233,0.30) !important; }
+[data-theme="light"] .border-teal-500\/30   { border-color: rgba(20,184,166,0.30) !important; }
+[data-theme="light"] .border-orange-500\/30 { border-color: rgba(249,115,22,0.30) !important; }
+[data-theme="light"] .border-emerald-500\/30{ border-color: rgba(16,185,129,0.30) !important; }
+[data-theme="light"] .border-indigo-500\/30 { border-color: rgba(99,102,241,0.30) !important; }
+[data-theme="light"] .border-fuchsia-500\/20{ border-color: rgba(217,70,239,0.25) !important; }
+[data-theme="light"] .border-rose-500\/30   { border-color: rgba(244,63,94,0.30) !important; }
+[data-theme="light"] .border-red-600\/30    { border-color: rgba(220,38,38,0.25) !important; }
+[data-theme="light"] .border-neutral-700\/60{ border-color: rgba(0,0,0,0.12) !important; }
+
+/* Zona upload en claro — override viejo (fallback) */
 [data-theme="light"] .border-dashed.border-neutral-700 {
-  border-color: #93c5fd !important; background-color: #f0f6ff !important;
+  border-color: rgba(99,102,241,0.28) !important;
 }
