@@ -193,19 +193,52 @@ export function useFiles({ me, periods, selectedPeriodId, periodNameById, sector
   function bumpVersion(id) {
     if (!myPerms.actions.bumpVersion) return;
     const before = files.find((x) => x.id === id);
+    const isSueldosRole = me?.role === "sueldos";
+
+    if (isSueldosRole) {
+      const ok = confirm(
+        `⚠️ ADVERTENCIA\n\n` +
+        `Estás a punto de registrar una nueva versión del archivo:\n"${before?.name || 'archivo'}"\n\n` +
+        `Esta acción es inusual para el rol Sueldos y quedará registrada en el historial de auditoría. ` +
+        `Los administradores serán notificados.\n\n` +
+        `¿Confirmás que querés continuar?`
+      );
+      if (!ok) return;
+    }
+
     updateFile(id, (f) =>
       addHistoryEntry(
         { ...f, version: (f.version || 1) + 1, status: "actualizado" },
-        "Nueva versión"
+        isSueldosRole ? "Nueva versión (por Sueldos)" : "Nueva versión"
       )
     );
-    publishEvent({
-      type: "version_bumped",
-      title: "Nueva versión",
-      message: `${me?.username || "sistema"} subió nueva versión de ${before?.name || "archivo"}`,
-      fileId: id,
-      periodId: before?.periodId,
-    });
+
+    if (isSueldosRole) {
+      db.files.appendAudit({
+        t: new Date().toISOString(),
+        action: "version_by_sueldos",
+        byUserId: me?.id || "",
+        byUsername: me?.username || "sistema",
+        details: `Sueldos registró nueva versión del archivo "${before?.name || ''}" (período: ${before?.periodId || ''})`,
+        fileId: id,
+        periodId: before?.periodId,
+      });
+      publishEvent({
+        type: "version_bumped",
+        title: "⚠️ Nueva versión por Sueldos",
+        message: `${me?.username || "Sueldos"} registró nueva versión de "${before?.name || 'archivo'}". Verificar si corresponde.`,
+        fileId: id,
+        periodId: before?.periodId,
+      });
+    } else {
+      publishEvent({
+        type: "version_bumped",
+        title: "Nueva versión",
+        message: `${me?.username || "sistema"} subió nueva versión de ${before?.name || "archivo"}`,
+        fileId: id,
+        periodId: before?.periodId,
+      });
+    }
   }
 
   function setNote(id, notes) {

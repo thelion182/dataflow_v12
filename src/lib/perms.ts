@@ -23,7 +23,7 @@ export const ROLE_DEFAULT_PERMISSIONS = {
   sueldos: {
     allowedStatuses: STATUS.map(s => s.key),
     actions: {
-      bumpVersion: false,
+      bumpVersion: true,
       download: true,
       markDownloaded: true,
       marcarDuda: true,

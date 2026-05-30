@@ -165,6 +165,11 @@ Ver `BACKEND_GUIDE.md` — guía completa con pasos, SQL, endpoints, LDAP, nginx
 3. `cp .env.example .env.local` → editar `VITE_USE_API=true` y `VITE_API_URL=http://servidor/api`
 4. `npm run dev` — el switch es automático, sin tocar ningún otro archivo
 
+## Cambios en v12 — nueva versión por sueldos con advertencia (2026-05-30)
+- `src/lib/perms.ts`: sueldos ahora tiene `bumpVersion: true`
+- `src/hooks/useFiles.ts`: `bumpVersion()` detecta rol sueldos → confirm fuerte + audit entry `version_by_sueldos` + publishEvent especial "⚠️ Nueva versión por Sueldos"
+- `src/features/files/FileTable.tsx`: botón "Nueva versión" movido al fondo del dropdown (sección "Versión"), texto ámbar con ⚠️ cuando es sueldos
+
 ## Cambios en v12 — bloqueo de carga por período + fix duplicados (2026-05-30)
 - `src/hooks/useFiles.ts`: `isUploadAllowedForRole` ahora bloquea a TODOS los roles (incluido superadmin) cuando la liquidación está bloqueada sin fechas, o bloqueada y fuera de la ventana de carga; alerta reemplazada por toast con mensaje descriptivo
 - `src/hooks/useFiles.ts`: `deleteFile` ahora es async y llama `DELETE /api/files/:id?hard=true` en API mode para hacer el hard delete real en el backend (fix del bug de duplicados al re-subir tras borrar)

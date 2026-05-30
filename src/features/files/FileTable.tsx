@@ -325,11 +325,6 @@ export function FileTable({
 
                       {rowMenuOpen === f.id && rowMenuAnchor && (
                         <RowMenuPortal anchorRect={rowMenuAnchor} onClose={() => { setRowMenuOpen(null); setRowMenuAnchor(null); }} width={256}>
-                          {myPerms.actions.bumpVersion && (
-                            <button onClick={() => { setRowMenuOpen(null); setRowMenuAnchor(null); bumpVersion(f.id); }} className={MENU_ITEM}>
-                              ➕ Nueva versión
-                            </button>
-                          )}
                           {myPerms.actions.download && (
                             <button onClick={() => { setRowMenuOpen(null); setRowMenuAnchor(null); doDownload(f.id); }} className={MENU_ITEM}>
                               ⬇️ Descargar
@@ -356,6 +351,18 @@ export function FileTable({
                               </button>
                               <button onClick={() => { setRowMenuOpen(null); setRowMenuAnchor(null); openFileDoubt(f); }} className={MENU_ITEM} title="Duda general del archivo">
                                 ❓ Duda del archivo
+                              </button>
+                            </>
+                          )}
+                          {myPerms.actions.bumpVersion && (
+                            <>
+                              <div className="px-2 pt-2 pb-1 text-[11px] uppercase tracking-wide text-neutral-500">Versión</div>
+                              <button
+                                onClick={() => { setRowMenuOpen(null); setRowMenuAnchor(null); bumpVersion(f.id); }}
+                                className={cls(MENU_ITEM, meRole === "sueldos" ? "text-amber-300" : "")}
+                                title={meRole === "sueldos" ? "Registrar nueva versión — quedará registrado y notificado a los administradores" : "Registrar nueva versión del archivo"}
+                              >
+                                ➕ Nueva versión{meRole === "sueldos" && <span className="ml-1 text-[10px] text-amber-500">⚠️</span>}
                               </button>
                             </>
                           )}
