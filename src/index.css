@@ -223,7 +223,14 @@ select option {
   background-color: var(--df-bg-page);
 }
 .df-content { flex: 1; padding: 16px 20px; overflow-x: hidden; }
-.modo-panel { padding: 20px 16px; }
+@keyframes df-panel-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.modo-panel {
+  padding: 20px 16px;
+  animation: df-panel-enter 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
 
 /* ── Cards ───────────────────────────────────────────────── */
 .df-card {
@@ -288,7 +295,19 @@ select option {
   0%, 100% { box-shadow: 0 0 6px rgba(99,102,241,0.55), 0 0 14px rgba(99,102,241,0.25); border-color: rgba(99,102,241,0.55); }
   50%       { box-shadow: 0 0 2px rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.18); }
 }
+.df-prox-wrapper {
+  position: relative;
+  margin-bottom: 10px;
+}
+.df-prox-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: -8px; left: 8px; right: 8px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(99,102,241,0.20), transparent);
+}
 .df-nav-item-prox {
+  position: relative;
   border-color: rgba(99,102,241,0.4) !important;
   color: #a5b4fc !important;
   animation: df-neon-glow 2.4s ease-in-out infinite;
@@ -296,9 +315,14 @@ select option {
 .df-nav-item-prox:hover { background-color: rgba(99,102,241,0.10) !important; color: #c7d2fe !important; }
 .df-nav-item-prox .df-nav-icon { color: #818cf8 !important; opacity: 1 !important; }
 .df-prox-badge {
-  background: rgba(99,102,241,0.18); color: #818cf8;
-  padding: 1px 5px; border-radius: 4px; border: 1px solid rgba(99,102,241,0.35);
-  letter-spacing: 0.06em;
+  position: absolute;
+  top: -7px; right: -4px;
+  background: rgba(99,102,241,0.85); color: #e0e7ff;
+  font-size: 8px; font-weight: 700; letter-spacing: 0.08em;
+  padding: 1px 5px; border-radius: 4px;
+  border: 1px solid rgba(99,102,241,0.60);
+  box-shadow: 0 0 6px rgba(99,102,241,0.50);
+  pointer-events: none;
 }
 .df-prox-modal {
   background: linear-gradient(145deg, #151c2e 0%, #0f1624 60%, #13102a 100%);
@@ -328,7 +352,8 @@ select option {
 /* light mode overrides */
 [data-theme="light"] .df-nav-item-prox { color: #4338ca !important; border-color: rgba(99,102,241,0.5) !important; }
 [data-theme="light"] .df-nav-item-prox .df-nav-icon { color: #4f46e5 !important; }
-[data-theme="light"] .df-prox-badge { color: #4f46e5; background: rgba(99,102,241,0.10); }
+[data-theme="light"] .df-prox-badge { color: #fff; background: rgba(79,70,229,0.90); border-color: rgba(79,70,229,0.70); box-shadow: 0 0 5px rgba(79,70,229,0.40); }
+[data-theme="light"] .df-prox-wrapper::after { background: linear-gradient(90deg, transparent, rgba(99,102,241,0.25), transparent); }
 [data-theme="light"] .df-prox-modal { background: linear-gradient(145deg, #f0f2ff 0%, #eef0ff 60%, #f3f0ff 100%); border-color: rgba(99,102,241,0.40); box-shadow: 0 0 30px rgba(99,102,241,0.12), 0 20px 60px rgba(0,0,0,0.12); }
 [data-theme="light"] .df-prox-badge-lg { color: #4338ca; background: rgba(99,102,241,0.10); border-color: rgba(99,102,241,0.30); }
 [data-theme="light"] .df-prox-close-btn { background: rgba(99,102,241,0.12); color: #4338ca; border-color: rgba(99,102,241,0.35); }

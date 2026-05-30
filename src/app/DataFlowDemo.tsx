@@ -1740,17 +1740,19 @@ return (
 
         {/* Crear Información — solo rrhh, próximamente */}
         {meRole === 'rrhh' && (
-          <button
-            onClick={() => setProxOpen(true)}
-            className="df-nav-item df-nav-item-prox"
-            title="Próximamente — módulo de gestión de información"
-          >
-            <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M8 1v14M1 8h14" strokeWidth="2"/>
-            </svg>
-            Crear Información
-            <span className="ml-auto text-[9px] font-semibold tracking-wide df-prox-badge">PRONTO</span>
-          </button>
+          <div className="df-prox-wrapper">
+            <button
+              onClick={() => setProxOpen(true)}
+              className="df-nav-item df-nav-item-prox"
+              title="Próximamente — módulo de gestión de información"
+            >
+              <svg className="df-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M8 1v14M1 8h14" strokeWidth="2"/>
+              </svg>
+              Crear Información
+              <span className="df-prox-badge">PRONTO</span>
+            </button>
+          </div>
         )}
 
         {/* Información */}
