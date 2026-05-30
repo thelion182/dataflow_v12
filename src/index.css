@@ -298,6 +298,7 @@ select option {
 .df-prox-wrapper {
   position: relative;
   margin-bottom: 10px;
+  overflow: visible;
 }
 .df-prox-wrapper::after {
   content: '';
