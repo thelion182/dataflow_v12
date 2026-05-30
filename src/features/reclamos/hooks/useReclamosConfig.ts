@@ -42,11 +42,16 @@ export function useReclamosConfig({ meId }: { meId?: string } = {}) {
   function agregarItem(campo: keyof ReclamosConfig, valor: string) {
     if (typeof config[campo] !== 'object' || !Array.isArray(config[campo])) return;
     if ((config[campo] as string[]).includes(valor)) return;
-    const nueva = {
-      ...config,
-      [campo]: [...(config[campo] as string[]), valor],
-    };
+    const nueva = { ...config, [campo]: [...(config[campo] as string[]), valor] };
     guardar(nueva);
+  }
+
+  function agregarItems(campo: keyof ReclamosConfig, valores: string[]) {
+    if (!Array.isArray(config[campo])) return;
+    const existentes = config[campo] as string[];
+    const nuevos = valores.filter(v => v && !existentes.includes(v));
+    if (!nuevos.length) return;
+    guardar({ ...config, [campo]: [...existentes, ...nuevos] });
   }
 
   function editarItem(campo: keyof ReclamosConfig, idx: number, valor: string) {
@@ -83,6 +88,7 @@ export function useReclamosConfig({ meId }: { meId?: string } = {}) {
     reload,
     guardar,
     agregarItem,
+    agregarItems,
     editarItem,
     eliminarItem,
     setEmailSueldos,

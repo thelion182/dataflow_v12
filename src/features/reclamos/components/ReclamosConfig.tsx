@@ -5,6 +5,7 @@ import type { ReclamosConfig } from '../types/reclamo.types';
 interface Props {
   config: ReclamosConfig;
   onAgregarItem: (campo: string, valor: string) => void;
+  onAgregarItems: (campo: string, valores: string[]) => void;
   onEditarItem: (campo: string, idx: number, valor: string) => void;
   onEliminarItem: (campo: string, idx: number) => void;
   onSetEmailSueldos: (email: string) => void;
@@ -32,10 +33,11 @@ function descargarCsvCampo(label: string, items: string[]) {
   URL.revokeObjectURL(url);
 }
 
-function ListaEditable({ label, items, onAgregar, onEditar, onEliminar }: {
+function ListaEditable({ label, items, onAgregar, onAgregarMultiples, onEditar, onEliminar }: {
   label: string;
   items: string[];
   onAgregar: (v: string) => void;
+  onAgregarMultiples: (vs: string[]) => void;
   onEditar: (idx: number, v: string) => void;
   onEliminar: (idx: number) => void;
 }) {
@@ -49,12 +51,15 @@ function ListaEditable({ label, items, onAgregar, onEditar, onEliminar }: {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
-      const text = (ev.target?.result as string) || '';
+      const raw = (ev.target?.result as string) || '';
+      // Eliminar BOM si está presente
+      const text = raw.charCodeAt(0) === 0xFEFF ? raw.slice(1) : raw;
       const lines = text.split(/\r?\n/).map((l: string) => l.trim()).filter(Boolean);
-      // Primera línea = encabezado, se omite
-      lines.slice(1).forEach((item: string) => { if (item) onAgregar(item); });
+      // Primera línea = encabezado, se omite; resto = valores a importar de una sola vez
+      const valores = lines.slice(1).filter(Boolean);
+      if (valores.length) onAgregarMultiples(valores);
     };
-    reader.readAsText(file);
+    reader.readAsText(file, 'UTF-8');
     e.target.value = '';
   }
 
@@ -211,7 +216,7 @@ function sampleEmailSueldos(emailSueldos: string, logoDataUrl?: string) {
 </body></html>`;
 }
 
-export function ReclamosConfig({ config, onAgregarItem, onEditarItem, onEliminarItem, onSetEmailSueldos, onSetWhatsappActivo, onSetLogoDataUrl, onSetNotificarLiquidado }: Props) {
+export function ReclamosConfig({ config, onAgregarItem, onAgregarItems, onEditarItem, onEliminarItem, onSetEmailSueldos, onSetWhatsappActivo, onSetLogoDataUrl, onSetNotificarLiquidado }: Props) {
   const [emailLocal, setEmailLocal] = useState(config.emailSueldos);
   const [emailGuardado, setEmailGuardado] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -247,6 +252,7 @@ export function ReclamosConfig({ config, onAgregarItem, onEditarItem, onEliminar
             label={label}
             items={(config[key] as string[]) || []}
             onAgregar={v => onAgregarItem(key, v)}
+            onAgregarMultiples={vs => onAgregarItems(key, vs)}
             onEditar={(idx, v) => onEditarItem(key, idx, v)}
             onEliminar={idx => onEliminarItem(key, idx)}
           />
