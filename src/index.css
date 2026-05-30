@@ -148,11 +148,11 @@ select option {
   display: flex; align-items: center; justify-content: center; gap: 10px;
 }
 .df-sidebar-logo-text {
-  font-size: 17px; font-weight: 700; letter-spacing: -0.03em;
+  font-size: 19px; font-weight: 700; letter-spacing: -0.03em;
   color: var(--df-text-primary);
 }
 .df-nav {
-  flex: 1; padding: 4px 8px;
+  flex: 1; padding: 4px 14px;
   overflow-y: auto;
   display: flex; flex-direction: column; gap: 6px;
 }
@@ -163,7 +163,7 @@ select option {
   padding: 8px 8px 2px;
 }
 .df-nav-item {
-  display: flex; align-items: center; justify-content: center; gap: 9px;
+  display: flex; align-items: center; gap: 9px;
   padding: 10px 12px;
   border-radius: var(--df-radius-md);
   font-size: 14px; font-weight: 500;
@@ -171,7 +171,7 @@ select option {
   transition: all var(--df-transition);
   cursor: pointer;
   border: 1px solid transparent;
-  width: 100%; text-align: center; background: transparent;
+  width: 100%; text-align: left; background: transparent;
 }
 .df-nav-item:hover {
   background-color: var(--df-bg-hover);

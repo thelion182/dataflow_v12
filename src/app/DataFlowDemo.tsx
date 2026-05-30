@@ -1730,7 +1730,7 @@ return (
     <aside className="df-sidebar">
       {/* Logo */}
       <div className="df-sidebar-logo">
-        <Logo className="h-9 w-auto animate-slowspin" />
+        <Logo className="h-10 w-auto animate-slowspin" />
         <span className="df-sidebar-logo-text">Dataflow</span>
       </div>
 
